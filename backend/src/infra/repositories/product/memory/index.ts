@@ -1,7 +1,7 @@
 import { ProductRepository } from "@/domain/modules/product/repository";
 
 export class ProductRepositoryInMemory implements ProductRepository {
-  private products: Array<ProductRepository.ProductModel> = [];
+  products: Array<ProductRepository.ProductModel> = [];
 
   create(input: ProductRepository.CreateInput): Promise<void> {
     this.products.push(input);
@@ -47,9 +47,19 @@ export class ProductRepositoryInMemory implements ProductRepository {
       for (let i = start; i < end; i++) {
         i >= usedArray.length ? (i = end) : paginatedData.push(usedArray[i]);
       }
-      return Promise.resolve(paginatedData);
+      return Promise.resolve(
+        paginatedData.map((product, index) => ({
+          ...product,
+          categoryName: `cat-name-${index}`,
+        }))
+      );
     } else {
-      return Promise.resolve(usedArray);
+      return Promise.resolve(
+        usedArray.map((product, index) => ({
+          ...product,
+          categoryName: `cat-name-${index}`,
+        }))
+      );
     }
   }
 }

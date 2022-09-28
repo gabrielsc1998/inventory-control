@@ -25,5 +25,5 @@ export namespace ProductRepository {
     filters?: FindAllFilters;
     pagination?: Pagination.Output;
   };
-  export type FindAllOutput = Array<ProductModel>;
+  export type FindAllOutput = Array<ProductModel & { categoryName: string }>;
 }
