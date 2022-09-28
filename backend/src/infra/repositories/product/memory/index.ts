@@ -8,9 +8,11 @@ export class ProductRepositoryInMemory implements ProductRepository {
     return Promise.resolve();
   }
 
-  findById(id: string): Promise<ProductRepository.ProductModel> {
+  findById(id: string): Promise<ProductRepository.FindByIdOutput> {
     const product = this.products.find((product) => product.id === id);
-    return Promise.resolve(product || null);
+    return Promise.resolve(
+      product ? { ...product, categoryName: "category-name" } : null
+    );
   }
 
   findAll(

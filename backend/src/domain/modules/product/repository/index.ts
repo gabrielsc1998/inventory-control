@@ -18,7 +18,7 @@ export namespace ProductRepository {
 
   export type CreateInput = ProductModel;
 
-  export type FindByIdOutput = ProductModel | null;
+  export type FindByIdOutput = (ProductModel & { categoryName: string }) | null;
 
   export type FindAllFilters = { categoryId?: string; name?: string };
   export type FindAllInput = {
