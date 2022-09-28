@@ -32,9 +32,10 @@ describe("Product [ Entity ]", () => {
 
     if (!hasError) {
       expect(output).toMatchObject(input);
+      expect(output.quantity).toBe(1);
     }
 
-    expect.assertions(3);
+    expect.assertions(4);
   });
 
   it("should return an error when is an invalid ID", () => {
