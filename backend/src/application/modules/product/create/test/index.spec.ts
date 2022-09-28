@@ -30,11 +30,11 @@ const makeSut = (): SUT => {
 
 let sut: SUT = null;
 
-describe("Create Category [ Use Case ]", () => {
+describe("Create Product [ Use Case ]", () => {
   beforeAll(() => (sut = makeSut()));
   beforeEach(() => jest.clearAllMocks());
 
-  it("should create a category with success", async () => {
+  it("should create a product with success", async () => {
     const input: CreateProduct.Input = {
       name: "name",
       categoryId: "category-id",
