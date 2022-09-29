@@ -4,7 +4,7 @@ import { ID, Name } from "@/domain/common/value-objects";
 export class Product {
   private readonly _id: ID;
   private readonly _name: Name;
-  private readonly _quantity: number;
+  private _quantity: number;
   private readonly _categoryId: ID;
 
   constructor(props: Product.Props) {
@@ -33,7 +33,7 @@ export class Product {
     return new Product({
       id,
       name,
-      quantity: 1,
+      quantity: input.quantity || 0,
       categoryId,
     });
   }
@@ -53,6 +53,17 @@ export class Product {
   get categoryId(): string {
     return this._categoryId.value;
   }
+
+  add(quantity: number) {
+    this._quantity += quantity;
+  }
+
+  remove(quantity: number) {
+    this._quantity -= quantity;
+    if (this._quantity < 0) {
+      this._quantity = 0;
+    }
+  }
 }
 
 export namespace Product {
@@ -67,6 +78,7 @@ export namespace Product {
     id: string;
     name: string;
     categoryId: string;
+    quantity?: number;
   };
 
   type OutputError = InvalidParamError;

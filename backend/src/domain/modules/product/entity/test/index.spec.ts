@@ -32,10 +32,80 @@ describe("Product [ Entity ]", () => {
 
     if (!hasError) {
       expect(output).toMatchObject(input);
-      expect(output.quantity).toBe(1);
+      expect(output.quantity).toBe(0);
     }
 
     expect.assertions(4);
+  });
+
+  it("should create a category with success [ with quantity ]", () => {
+    const input: Product.Input = {
+      id: "id",
+      name: "name",
+      categoryId: "category-id",
+      quantity: 10,
+    };
+
+    const output = sut.category.create(input);
+    const hasError = output instanceof InvalidParamError;
+
+    expect(hasError).toBeFalsy();
+    expect(output).toBeInstanceOf(Product);
+
+    if (!hasError) {
+      expect(output).toMatchObject(input);
+      expect(output.quantity).toBe(10);
+    }
+
+    expect.assertions(4);
+  });
+
+  it("should add a quantity", () => {
+    const input: Product.Input = {
+      id: "id",
+      name: "name",
+      categoryId: "category-id",
+      quantity: 10,
+    };
+
+    const output = sut.category.create(input);
+    const hasError = output instanceof InvalidParamError;
+
+    expect(hasError).toBeFalsy();
+    expect(output).toBeInstanceOf(Product);
+
+    if (!hasError) {
+      expect(output).toMatchObject(input);
+      expect(output.quantity).toBe(input.quantity);
+      output.add(input.quantity);
+      expect(output.quantity).toBe(input.quantity * 2);
+    }
+
+    expect.assertions(5);
+  });
+
+  it("should remove a quantity", () => {
+    const input: Product.Input = {
+      id: "id",
+      name: "name",
+      categoryId: "category-id",
+      quantity: 10,
+    };
+
+    const output = sut.category.create(input);
+    const hasError = output instanceof InvalidParamError;
+
+    expect(hasError).toBeFalsy();
+    expect(output).toBeInstanceOf(Product);
+
+    if (!hasError) {
+      expect(output).toMatchObject(input);
+      expect(output.quantity).toBe(input.quantity);
+      output.remove(input.quantity * 2);
+      expect(output.quantity).toBe(0);
+    }
+
+    expect.assertions(5);
   });
 
   it("should return an error when is an invalid ID", () => {
