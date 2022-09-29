@@ -1,13 +1,12 @@
 import { CREDENTIALS } from "@/common/credentials";
-import { User } from "@/domain/modules/user/types";
+import { InvalidCredentialsError } from "@/domain/errors";
 import { TokenHandler } from "@/domain/contracts/gateways";
 import { UserLogin } from "@/domain/modules/user/use-cases";
-import { InvalidCredentialsError } from "@/domain/errors";
 
 export class UserLoginUseCase implements UserLogin {
   constructor(private readonly tokenHandler: TokenHandler) {}
 
-  async execute(input: User): Promise<UserLogin.Output> {
+  async execute(input: UserLogin.Input): Promise<UserLogin.Output> {
     if (!input) {
       return new InvalidCredentialsError();
     }
