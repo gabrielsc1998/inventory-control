@@ -1,6 +1,7 @@
 import { TokenHandler } from "@/domain/contracts/gateways";
 
 export const tokenHandlerMock = {
+  defaultValidateRet: true,
   generatedToken: "generated-token",
 };
 
@@ -10,6 +11,6 @@ export class TokenHandlerMock implements TokenHandler {
   }
 
   validate(input: TokenHandler.ValidateInput): boolean {
-    throw new Error("Method not implemented.");
+    return tokenHandlerMock.defaultValidateRet;
   }
 }
