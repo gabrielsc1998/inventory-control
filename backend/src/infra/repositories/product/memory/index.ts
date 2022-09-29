@@ -17,7 +17,7 @@ export class ProductRepositoryInMemory implements ProductRepository {
     if (productIndex !== -1) {
       const currentProduct = this.products[productIndex];
       const updatedProduct = { ...currentProduct, ...input };
-      this.products.splice(productIndex, 1);
+      this.products.splice(productIndex, 1, updatedProduct);
       return Promise.resolve(updatedProduct);
     }
     return Promise.resolve(null);
