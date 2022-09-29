@@ -8,6 +8,21 @@ export class ProductRepositoryInMemory implements ProductRepository {
     return Promise.resolve();
   }
 
+  update(
+    input: ProductRepository.UpdateInput
+  ): Promise<ProductRepository.ProductModel> {
+    const productIndex = this.products.findIndex(
+      (product) => product.id === input.id
+    );
+    if (productIndex !== -1) {
+      const currentProduct = this.products[productIndex];
+      const updatedProduct = { ...currentProduct, ...input };
+      this.products.splice(productIndex, 1);
+      return Promise.resolve(updatedProduct);
+    }
+    return Promise.resolve(null);
+  }
+
   findById(id: string): Promise<ProductRepository.FindByIdOutput> {
     const product = this.products.find((product) => product.id === id);
     return Promise.resolve(
