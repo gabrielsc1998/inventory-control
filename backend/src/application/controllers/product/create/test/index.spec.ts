@@ -2,9 +2,10 @@ import {
   idGeneratorMock,
   IDGeneratorMock,
 } from "@/common/tests/mocks/infra/gateways";
-import { NotFoundError } from "@/domain/errors";
 import { badRequest, notFound, ok } from "@/application/helpers";
 import { Controller } from "@/application/contracts/controllers";
+import { CreateProduct } from "@/domain/modules/product/use-cases";
+import { InvalidParamError, NotFoundError } from "@/domain/errors";
 import { CheckIfExistCategory } from "@/domain/modules/category/use-cases";
 import { ProductRepositoryInMemory } from "@/infra/repositories/product/memory";
 import { CategoryRepositoryInMemory } from "@/infra/repositories/category/memory";
@@ -16,6 +17,7 @@ import { CreateProductController } from "..";
 type SUT = {
   checkIfExistCategory: CheckIfExistCategory;
   createProductController: Controller;
+  createProductUseCase: CreateProduct;
 };
 
 const makeSut = (): SUT => {
@@ -38,6 +40,7 @@ const makeSut = (): SUT => {
 
   return {
     checkIfExistCategory,
+    createProductUseCase,
     createProductController,
   };
 };
@@ -108,5 +111,28 @@ describe("Create Product [ Controller ]", () => {
     expect(output).toMatchObject(
       badRequest(new Error(`categoryId not provided`))
     );
+  });
+
+  it("should return an error when the use case find a invalid param", async () => {
+    const input = {
+      body: {
+        categoryId: "invalid-id",
+        name: "product-name",
+      },
+    };
+
+    jest
+      .spyOn(sut.checkIfExistCategory, "execute")
+      .mockImplementation(() => Promise.resolve(true));
+
+    const mockError = new InvalidParamError(`category-id`);
+    const spyUseCase = jest
+      .spyOn(sut.createProductUseCase, "execute")
+      .mockImplementation(() => Promise.resolve(mockError));
+
+    const output = await sut.createProductController.handle(input);
+
+    expect(output).toMatchObject(badRequest(mockError));
+    expect(spyUseCase).toBeCalledWith(input.body);
   });
 });
