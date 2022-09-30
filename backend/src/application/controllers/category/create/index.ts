@@ -29,6 +29,9 @@ export class CreateCategoryController implements Controller {
       return response.badRequest(output);
     }
 
-    return response.ok(output);
+    return response.ok({
+      id: output.id,
+      name: output.name,
+    });
   }
 }
