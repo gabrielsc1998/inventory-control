@@ -24,6 +24,7 @@ jest.mock("../config", () => {
 
 jest.mock("express", () => {
   return () => ({
+    use: (req: any, res: any, next: any) => {},
     listen: (port: Number, cb?: any) => {},
     get: (method: string, cb?: any) => {},
     post: (method: string, cb?: any) => {},
@@ -32,13 +33,18 @@ jest.mock("express", () => {
   });
 });
 
+let abstractServer: any;
+
 describe("Express Adapter [ Server ]", () => {
-  beforeAll(() => (sut = makeSut()));
+  beforeAll(() => {
+    sut = makeSut();
+    abstractServer = sut.server as any;
+  });
+
   beforeEach(() => jest.clearAllMocks());
 
   it("should start the server successfully", () => {
-    const serverTest = sut.server as any;
-    const spyList = jest.spyOn(serverTest._app, "listen");
+    const spyList = jest.spyOn(abstractServer._app, "listen");
 
     const input: Server.ListInput = { port: 3000, callback: () => {} };
     sut.server.listen(input);
@@ -46,10 +52,16 @@ describe("Express Adapter [ Server ]", () => {
     expect(spyList).toBeCalledWith(input.port, expect.any(Function));
   });
 
+  it("should register the middleware", () => {
+    const spyUse = jest.spyOn(abstractServer._app, "use");
+
+    sut.server.middlewareRegister(() => {});
+
+    expect(spyUse).toBeCalledWith(expect.any(Function));
+  });
+
   ["get", "post", "put", "delete"].forEach((method) => {
     it(`should on method [${method}] successfully`, () => {
-      const serverTest = sut.server as any;
-
       const input: Server.OnInput = {
         method: method.toUpperCase() as Server.Methods,
         handler: (): void => {
@@ -58,7 +70,7 @@ describe("Express Adapter [ Server ]", () => {
         route: "route",
       };
 
-      const spyOn = jest.spyOn(serverTest._app, method);
+      const spyOn = jest.spyOn(abstractServer._app, method);
       sut.server.on(input);
       expect(spyOn).toBeCalledWith(input.route, expect.any(Function));
     });
