@@ -6,7 +6,7 @@ import { CREDENTIALS } from "@/common/credentials";
 import { TokenHandler } from "@/domain/contracts/gateways";
 import { Controller } from "@/application/contracts/controllers";
 import { badRequest, ok, unauthorized } from "@/application/helpers";
-import { UserLoginUseCase } from "@/application/modules/user/use-cases/login";
+import { UserLoginUseCase } from "@/application/modules/user/use-cases";
 
 import { LoginController } from "..";
 
