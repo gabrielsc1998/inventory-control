@@ -1,7 +1,8 @@
-import { NotFoundError } from "@/domain/errors";
+import { InvalidParamError, NotFoundError } from "@/domain/errors";
 import { Controller } from "@/application/contracts/controllers";
+import { badRequest, notFound, ok } from "@/application/helpers";
+import { GetOneProduct } from "@/domain/modules/product/use-cases";
 import { ProductRepository } from "@/domain/modules/product/repository";
-import { badRequest, notFound, ok, unauthorized } from "@/application/helpers";
 import { ProductRepositoryInMemory } from "@/infra/repositories/product/memory";
 import { GetOneProductUseCase } from "@/application/modules/product/use-cases/getOne";
 
@@ -10,6 +11,7 @@ import { GetOneProductController } from "..";
 type SUT = {
   repository: ProductRepository;
   getOneProductController: Controller;
+  getOneProductUseCase: GetOneProduct;
 };
 
 const mocks = {
@@ -27,6 +29,7 @@ const makeSut = (): SUT => {
   return {
     repository: productRepository,
     getOneProductController,
+    getOneProductUseCase,
   };
 };
 
@@ -76,5 +79,23 @@ describe("Get One Product [ Controller ]", () => {
       params: { id: null },
     });
     expect(output).toMatchObject(badRequest(new Error(`id not provided`)));
+  });
+
+  it("should return an error when the use case find a invalid param", async () => {
+    const input = {
+      params: {
+        id: "invalid-id",
+      },
+    };
+
+    const mockError = new InvalidParamError(`id`);
+
+    jest
+      .spyOn(sut.getOneProductUseCase, "execute")
+      .mockImplementation(() => Promise.resolve(mockError));
+
+    const output = await sut.getOneProductController.handle(input);
+
+    expect(output).toMatchObject(badRequest(mockError));
   });
 });
