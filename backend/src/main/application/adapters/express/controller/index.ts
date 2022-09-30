@@ -5,9 +5,9 @@ import { Controller } from "@/application/contracts/controllers";
 export const controllerHandlerExpressAdapter = (controller: Controller) => {
   return async (req: Request, res: Response) => {
     const dtoRequest = {
-      body: req.body || {},
-      params: req.params || {},
-      query: req.query || {},
+      body: req?.body || {},
+      params: req?.params || {},
+      query: req?.query || {},
     };
 
     const output = await controller.handle(dtoRequest);
