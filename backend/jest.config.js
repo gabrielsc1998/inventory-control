@@ -11,4 +11,9 @@ module.exports = {
     "@/(.*)": "<rootDir>/src/$1",
   },
   collectCoverageFrom: ["<rootDir>/src/**/*.(t|j)s"],
+  modulePathIgnorePatterns: [
+    "<rootDir>/src/index.ts", // exclui o arquivo principal da aplicação
+    "<rootDir>/src/(.*)/config/(.*)", // exclui arquivos de config
+    "<rootDir>/src/main(.*)", // exclui arquivos da main
+  ],
 };
