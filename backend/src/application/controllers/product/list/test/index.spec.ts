@@ -162,31 +162,4 @@ describe("List Products [ Controller ]", () => {
     expect(output).toMatchObject(ok(mockRet));
     expect(spyUseCase).toBeCalledWith(input.query);
   });
-
-  // it("should return an error when the product not exists", async () => {
-  //   const input = {
-  //     query: {
-  //       id: "inexistent-product-id",
-  //     },
-  //   };
-
-  //   jest.spyOn(sut.listProductsUseCase, "execute").mockResolvedValue(null);
-  //   const output = await sut.listProductsController.handle(input);
-
-  //   expect(output).toMatchObject(
-  //     notFound(new NotFoundError(`Product [id = ${input.query.id}]`))
-  //   );
-  // });
-
-  // it("should return an error when the input is null", async () => {
-  //   const output = await sut.listProductsController.handle(null);
-  //   expect(output).toMatchObject(badRequest(new Error(`id not provided`)));
-  // });
-
-  // it("should return an error when the id is null", async () => {
-  //   const output = await sut.listProductsController.handle({
-  //     query: { id: null },
-  //   });
-  //   expect(output).toMatchObject(badRequest(new Error(`id not provided`)));
-  // });
 });
