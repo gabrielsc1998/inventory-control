@@ -2,8 +2,10 @@ import {
   idGeneratorMock,
   IDGeneratorMock,
 } from "@/common/tests/mocks/infra/gateways";
+import { InvalidParamError } from "@/domain/errors";
+import { badRequest, ok } from "@/application/helpers";
 import { Controller } from "@/application/contracts/controllers";
-import { badRequest, ok, unauthorized } from "@/application/helpers";
+import { CreateCategory } from "@/domain/modules/category/use-cases";
 import { CategoryRepositoryInMemory } from "@/infra/repositories/category/memory";
 import { CreateCategoryUseCase } from "@/application/modules/category/use-cases/create";
 
@@ -11,6 +13,7 @@ import { CreateCategoryController } from "..";
 
 type SUT = {
   createCategoryController: Controller;
+  createCategoryUseCase: CreateCategory;
 };
 
 const makeSut = (): SUT => {
@@ -27,6 +30,7 @@ const makeSut = (): SUT => {
 
   return {
     createCategoryController,
+    createCategoryUseCase,
   };
 };
 
@@ -63,5 +67,23 @@ describe("Create Category [ Controller ]", () => {
       body: { name: null },
     });
     expect(output).toMatchObject(badRequest(new Error(`name not provided`)));
+  });
+
+  it("should return an error when the use case find a invalid param", async () => {
+    const input = {
+      body: {
+        name: "invalid-name",
+      },
+    };
+
+    const mockError = new InvalidParamError(`id`);
+
+    jest
+      .spyOn(sut.createCategoryUseCase, "execute")
+      .mockImplementation(() => Promise.resolve(mockError));
+
+    const output = await sut.createCategoryController.handle(input);
+
+    expect(output).toMatchObject(badRequest(mockError));
   });
 });
