@@ -3,12 +3,12 @@ import { InvalidParamError } from "@/domain/errors";
 import { Product } from "..";
 
 type SUT = {
-  category: typeof Product;
+  product: typeof Product;
 };
 
 const makeSut = (): SUT => {
   return {
-    category: Product,
+    product: Product,
   };
 };
 
@@ -17,14 +17,14 @@ let sut: SUT = null;
 describe("Product [ Entity ]", () => {
   beforeAll(() => (sut = makeSut()));
 
-  it("should create a category with success", () => {
+  it("should create a product with success", () => {
     const input: Product.Input = {
       id: "id",
       name: "name",
       categoryId: "category-id",
     };
 
-    const output = sut.category.create(input);
+    const output = sut.product.create(input);
     const hasError = output instanceof InvalidParamError;
 
     expect(hasError).toBeFalsy();
@@ -38,7 +38,7 @@ describe("Product [ Entity ]", () => {
     expect.assertions(4);
   });
 
-  it("should create a category with success [ with quantity ]", () => {
+  it("should create a product with success [ with quantity ]", () => {
     const input: Product.Input = {
       id: "id",
       name: "name",
@@ -46,7 +46,7 @@ describe("Product [ Entity ]", () => {
       quantity: 10,
     };
 
-    const output = sut.category.create(input);
+    const output = sut.product.create(input);
     const hasError = output instanceof InvalidParamError;
 
     expect(hasError).toBeFalsy();
@@ -68,7 +68,7 @@ describe("Product [ Entity ]", () => {
       quantity: 10,
     };
 
-    const output = sut.category.create(input);
+    const output = sut.product.create(input);
     const hasError = output instanceof InvalidParamError;
 
     expect(hasError).toBeFalsy();
@@ -92,7 +92,7 @@ describe("Product [ Entity ]", () => {
       quantity: 10,
     };
 
-    const output = sut.category.create(input);
+    const output = sut.product.create(input);
     const hasError = output instanceof InvalidParamError;
 
     expect(hasError).toBeFalsy();
@@ -101,7 +101,31 @@ describe("Product [ Entity ]", () => {
     if (!hasError) {
       expect(output).toMatchObject(input);
       expect(output.quantity).toBe(input.quantity);
-      output.remove(input.quantity * 2);
+      const removeOutput = output.remove(input.quantity * 2);
+      expect(removeOutput).toMatchObject(new Error("Unavailable quantity"));
+    }
+
+    expect.assertions(5);
+  });
+
+  it("should remove when the quantity to removed is grather then the current quantity", () => {
+    const input: Product.Input = {
+      id: "id",
+      name: "name",
+      categoryId: "category-id",
+      quantity: 10,
+    };
+
+    const output = sut.product.create(input);
+    const hasError = output instanceof InvalidParamError;
+
+    expect(hasError).toBeFalsy();
+    expect(output).toBeInstanceOf(Product);
+
+    if (!hasError) {
+      expect(output).toMatchObject(input);
+      expect(output.quantity).toBe(input.quantity);
+      output.remove(input.quantity);
       expect(output.quantity).toBe(0);
     }
 
@@ -115,7 +139,7 @@ describe("Product [ Entity ]", () => {
       categoryId: "category-id",
     };
 
-    const output = sut.category.create(input);
+    const output = sut.product.create(input);
     expect(output).toBeInstanceOf(InvalidParamError);
     expect(output).toMatchObject(new InvalidParamError(`id - ${input.id}`));
   });
@@ -127,7 +151,7 @@ describe("Product [ Entity ]", () => {
       categoryId: null,
     };
 
-    const output = sut.category.create(input);
+    const output = sut.product.create(input);
     expect(output).toBeInstanceOf(InvalidParamError);
     expect(output).toMatchObject(
       new InvalidParamError(`categoryId - ${input.categoryId}`)
@@ -141,7 +165,7 @@ describe("Product [ Entity ]", () => {
       categoryId: "category-id",
     };
 
-    const output = sut.category.create(input);
+    const output = sut.product.create(input);
     expect(output).toBeInstanceOf(InvalidParamError);
     expect(output).toMatchObject(new InvalidParamError(`name - ${input.name}`));
   });

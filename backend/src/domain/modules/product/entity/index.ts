@@ -58,11 +58,11 @@ export class Product {
     this._quantity += quantity;
   }
 
-  remove(quantity: number) {
-    this._quantity -= quantity;
-    if (this._quantity < 0) {
-      this._quantity = 0;
+  remove(quantity: number): void | Error {
+    if (quantity > this._quantity) {
+      return new Error("Unavailable quantity");
     }
+    this._quantity -= quantity;
   }
 }
 
