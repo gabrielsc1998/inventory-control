@@ -4,7 +4,7 @@ import { badRequest, notFound, ok } from "@/application/helpers";
 import { GetOneProduct } from "@/domain/modules/product/use-cases";
 import { ProductRepository } from "@/domain/modules/product/repository";
 import { ProductRepositoryInMemory } from "@/infra/repositories/product/memory";
-import { GetOneProductUseCase } from "@/application/modules/product/use-cases/getOne";
+import { GetOneProductUseCase } from "@/application/modules/product/use-cases/get-one";
 
 import { GetOneProductController } from "..";
 
