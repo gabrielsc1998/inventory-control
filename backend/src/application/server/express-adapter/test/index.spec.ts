@@ -52,7 +52,7 @@ describe("Express Adapter [ Server ]", () => {
 
       const input: Server.OnInput = {
         method: method.toUpperCase() as Server.Methods,
-        callback: (): void => {
+        handler: (): void => {
           return;
         },
         route: "route",

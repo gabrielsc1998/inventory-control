@@ -14,12 +14,16 @@ export class ServerExpressAdapter implements Server {
     setDefaultMiddlewares(this._app);
   }
 
+  middlewareRegister(middlare: any): void {
+    this._app.use(middlare);
+  }
+
   listen(input: Server.ListInput): void {
     this._app.listen(input.port, input.callback);
   }
 
   on(input: Server.OnInput): void {
     const method = input.method.toLowerCase() as ExpressMethods;
-    this._app[method](input.route, input.callback);
+    this._app[method](input.route, input.handler);
   }
 }

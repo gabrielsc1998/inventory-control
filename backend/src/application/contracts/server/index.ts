@@ -1,6 +1,7 @@
 export interface Server {
   on(input: Server.OnInput): void;
   listen(input: Server.ListInput): void;
+  middlewareRegister(middlare: any): void;
 }
 
 export namespace Server {
@@ -8,7 +9,7 @@ export namespace Server {
   export type OnInput = {
     route: string;
     method: Methods;
-    callback: <TRequest = unknown, TResponse = unknown>(
+    handler: <TRequest = unknown, TResponse = unknown>(
       request: TRequest,
       response: TResponse
     ) => any;
