@@ -11,4 +11,9 @@ export class CategoryRepositoryInMemory implements CategoryRepository {
   findAll(): Promise<CategoryRepository.FindAllOutput> {
     return Promise.resolve(this.categories);
   }
+
+  findById(id: string): Promise<CategoryRepository.FindByIdOutput> {
+    const category = this.categories.find((category) => category.id === id);
+    return Promise.resolve(category ? category : null);
+  }
 }
