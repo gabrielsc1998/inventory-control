@@ -6,7 +6,7 @@ import { CREDENTIALS } from "@/common/credentials";
 import { TokenHandler } from "@/domain/contracts/gateways";
 import { Controller } from "@/application/contracts/controllers";
 import { badRequest, ok, unauthorized } from "@/application/helpers";
-import { UserLoginUseCase } from "@/application/modules/user/use-cases";
+import { AuthLoginUseCase } from "@/application/modules/auth/use-cases";
 
 import { LoginController } from "..";
 
@@ -17,7 +17,7 @@ type SUT = {
 
 const makeSut = (): SUT => {
   const tokenHandler = new TokenHandlerMock();
-  const loginUseCase = new UserLoginUseCase(tokenHandler);
+  const loginUseCase = new AuthLoginUseCase(tokenHandler);
   const loginController = new LoginController(loginUseCase);
 
   return {

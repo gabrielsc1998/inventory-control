@@ -4,18 +4,18 @@ import {
 } from "@/common/tests/mocks/infra/gateways/token-handler";
 import { InvalidTokenError } from "@/domain/errors";
 import { TokenHandler } from "@/domain/contracts/gateways";
-import { UserRefreshToken } from "@/domain/modules/user/use-cases";
+import { AuthRefreshToken } from "@/domain/modules/auth/use-cases";
 
-import { UserRefreshTokenUseCase } from "..";
+import { AuthRefreshTokenUseCase } from "..";
 
 type SUT = {
   tokenHandler: TokenHandler;
-  refreshToken: UserRefreshToken;
+  refreshToken: AuthRefreshToken;
 };
 
 const makeSut = (): SUT => {
   const tokenHandler = new TokenHandlerMock();
-  const refreshToken = new UserRefreshTokenUseCase(tokenHandler);
+  const refreshToken = new AuthRefreshTokenUseCase(tokenHandler);
 
   return {
     tokenHandler,
@@ -31,7 +31,7 @@ describe("Login [ Use Case ]", () => {
   beforeEach(() => jest.clearAllMocks());
 
   it("should refresh token successfully", async () => {
-    const input: UserRefreshToken.Input = {
+    const input: AuthRefreshToken.Input = {
       refreshToken: "valid-refresh-token",
     };
 
@@ -54,7 +54,7 @@ describe("Login [ Use Case ]", () => {
   });
 
   it("should return invalid-token when the input is null", async () => {
-    const input: UserRefreshToken.Input = null;
+    const input: AuthRefreshToken.Input = null;
 
     const spyTokenValidate = jest.spyOn(sut.tokenHandler, "validate");
     const spyTokenGenerate = jest.spyOn(sut.tokenHandler, "generate");
@@ -70,7 +70,7 @@ describe("Login [ Use Case ]", () => {
   });
 
   it("should return invalid-token when the token is invalid", async () => {
-    const input: UserRefreshToken.Input = {
+    const input: AuthRefreshToken.Input = {
       refreshToken: "invalid-token",
     };
 

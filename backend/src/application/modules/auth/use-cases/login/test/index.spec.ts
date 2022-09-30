@@ -5,18 +5,18 @@ import {
 import { CREDENTIALS } from "@/common/credentials";
 import { InvalidCredentialsError } from "@/domain/errors";
 import { TokenHandler } from "@/domain/contracts/gateways";
-import { UserLogin } from "@/domain/modules/user/use-cases";
+import { AuthLogin } from "@/domain/modules/auth/use-cases";
 
-import { UserLoginUseCase } from "..";
+import { AuthLoginUseCase } from "..";
 
 type SUT = {
   tokenHandler: TokenHandler;
-  login: UserLogin;
+  login: AuthLogin;
 };
 
 const makeSut = (): SUT => {
   const tokenHandler = new TokenHandlerMock();
-  const login = new UserLoginUseCase(tokenHandler);
+  const login = new AuthLoginUseCase(tokenHandler);
 
   return {
     tokenHandler,
@@ -32,7 +32,7 @@ describe("Login [ Use Case ]", () => {
   beforeEach(() => jest.clearAllMocks());
 
   it("should login successfully", async () => {
-    const input: UserLogin.Input = {
+    const input: AuthLogin.Input = {
       email: CREDENTIALS.EMAIL,
       password: CREDENTIALS.PASSWORD,
     };
@@ -56,7 +56,7 @@ describe("Login [ Use Case ]", () => {
   });
 
   it("should return invalid-credential when the input is null", async () => {
-    const input: UserLogin.Input = null;
+    const input: AuthLogin.Input = null;
 
     const spyTokenGenerate = jest.spyOn(sut.tokenHandler, "generate");
 
@@ -70,7 +70,7 @@ describe("Login [ Use Case ]", () => {
   });
 
   it("should return invalid-credential when the credentials are invalid", async () => {
-    const input: UserLogin.Input = {
+    const input: AuthLogin.Input = {
       email: "invalid-email",
       password: "invalid-password",
     };

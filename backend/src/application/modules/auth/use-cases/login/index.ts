@@ -1,12 +1,12 @@
 import { CREDENTIALS } from "@/common/credentials";
 import { InvalidCredentialsError } from "@/domain/errors";
 import { TokenHandler } from "@/domain/contracts/gateways";
-import { UserLogin } from "@/domain/modules/user/use-cases";
+import { AuthLogin } from "@/domain/modules/auth/use-cases";
 
-export class UserLoginUseCase implements UserLogin {
+export class AuthLoginUseCase implements AuthLogin {
   constructor(private readonly tokenHandler: TokenHandler) {}
 
-  async execute(input: UserLogin.Input): Promise<UserLogin.Output> {
+  async execute(input: AuthLogin.Input): Promise<AuthLogin.Output> {
     if (!input) {
       return new InvalidCredentialsError();
     }

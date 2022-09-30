@@ -1,8 +1,8 @@
 import { LoginController } from "@/application/controllers/auth";
 
-import { makeUserLoginUseCase } from "../../modules/user/use-cases/login";
+import { makeAuthLoginUseCase } from "../../modules/auth/use-cases/login";
 
 export const makeLoginController = (): LoginController => {
-  const loginUseCase = makeUserLoginUseCase();
+  const loginUseCase = makeAuthLoginUseCase();
   return new LoginController(loginUseCase);
 };

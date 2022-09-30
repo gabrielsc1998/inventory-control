@@ -1,10 +1,10 @@
 import { InvalidTokenError } from "@/domain/errors";
 
-export interface UserRefreshToken {
-  execute(input: UserRefreshToken.Input): Promise<UserRefreshToken.Output>;
+export interface AuthRefreshToken {
+  execute(input: AuthRefreshToken.Input): Promise<AuthRefreshToken.Output>;
 }
 
-export namespace UserRefreshToken {
+export namespace AuthRefreshToken {
   export type Input = {
     refreshToken: string;
   };

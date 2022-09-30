@@ -1,13 +1,13 @@
 import { InvalidTokenError } from "@/domain/errors";
 import { TokenHandler } from "@/domain/contracts/gateways";
-import { UserRefreshToken } from "@/domain/modules/user/use-cases";
+import { AuthRefreshToken } from "@/domain/modules/auth/use-cases";
 
-export class UserRefreshTokenUseCase implements UserRefreshToken {
+export class AuthRefreshTokenUseCase implements AuthRefreshToken {
   constructor(private readonly tokenHandler: TokenHandler) {}
 
   async execute(
-    input: UserRefreshToken.Input
-  ): Promise<UserRefreshToken.Output> {
+    input: AuthRefreshToken.Input
+  ): Promise<AuthRefreshToken.Output> {
     if (!input) {
       return new InvalidTokenError();
     }

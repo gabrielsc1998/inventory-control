@@ -5,7 +5,7 @@ import {
 import { TokenHandler } from "@/domain/contracts/gateways";
 import { Controller } from "@/application/contracts/controllers";
 import { badRequest, ok, unauthorized } from "@/application/helpers";
-import { UserRefreshTokenUseCase } from "@/application/modules/user/use-cases";
+import { AuthRefreshTokenUseCase } from "@/application/modules/auth/use-cases";
 
 import { RefreshTokenController } from "..";
 
@@ -16,7 +16,7 @@ type SUT = {
 
 const makeSut = (): SUT => {
   const tokenHandler = new TokenHandlerMock();
-  const refreshTokenUseCase = new UserRefreshTokenUseCase(tokenHandler);
+  const refreshTokenUseCase = new AuthRefreshTokenUseCase(tokenHandler);
   const refreshTokenController = new RefreshTokenController(
     refreshTokenUseCase
   );

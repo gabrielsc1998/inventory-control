@@ -3,10 +3,10 @@ import { InvalidTokenError } from "@/domain/errors";
 import { HttpResponse } from "@/application/contracts/http";
 import { hasAllFields } from "@/application/validators/fields";
 import { Controller } from "@/application/contracts/controllers";
-import { UserRefreshToken } from "@/domain/modules/user/use-cases";
+import { AuthRefreshToken } from "@/domain/modules/auth/use-cases";
 
 export class RefreshTokenController implements Controller {
-  constructor(private readonly refreshTokenUseCase: UserRefreshToken) {}
+  constructor(private readonly refreshTokenUseCase: AuthRefreshToken) {}
   async handle(request: {
     body: { access_token: string };
   }): Promise<HttpResponse> {
