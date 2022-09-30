@@ -18,7 +18,11 @@ export class RemoveProductUseCase implements RemoveProduct {
     }
 
     const product = Product.create(currentProduct) as Product;
-    product.remove(input.quantity);
+    const errorToRemove = product.remove(input.quantity);
+
+    if (errorToRemove) {
+      return errorToRemove;
+    }
 
     const updatedProduct = await this.repository.update({
       id: product.id,

@@ -34,10 +34,26 @@ describe("Remove Product [ Use Case ]", () => {
 
   beforeEach(() => jest.clearAllMocks());
 
-  it("should remove products with success", async () => {
+  it("should return an error when the remove quantity is grather then current quantity", async () => {
     const input: RemoveProduct.Input = {
       id: mocks.product.id,
-      quantity: 20,
+      quantity: mocks.product.quantity * 2,
+    };
+
+    const spyRepoFindById = jest.spyOn(sut.repository, "findById");
+
+    const output = await sut.removeProduct.execute(input);
+    const hasError = output instanceof Error;
+
+    expect(hasError).toBeTruthy();
+    expect(output).toMatchObject(new Error("Unavailable quantity"));
+    expect(spyRepoFindById).toBeCalledWith(input.id);
+  });
+
+  it("should remove products successfully", async () => {
+    const input: RemoveProduct.Input = {
+      id: mocks.product.id,
+      quantity: mocks.product.quantity,
     };
 
     const spyRepoFindById = jest.spyOn(sut.repository, "findById");
@@ -48,7 +64,7 @@ describe("Remove Product [ Use Case ]", () => {
     expect(hasError).toBeFalsy();
     expect(output).toMatchObject({
       id: input.id,
-      quantity: 0,
+      quantity: mocks.product.quantity - input.quantity,
     });
     expect(spyRepoFindById).toBeCalledWith(input.id);
   });
