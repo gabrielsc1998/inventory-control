@@ -1,7 +1,6 @@
 import * as response from "@/application/helpers";
 import { InvalidParamError } from "@/domain/errors";
 import { hasAllFields } from "@/application/validators";
-import { AuthLogin } from "@/domain/modules/auth/use-cases";
 import { HttpResponse } from "@/application/contracts/http";
 import { Controller } from "@/application/contracts/controllers";
 import { CreateCategory } from "@/domain/modules/category/use-cases";
@@ -9,7 +8,7 @@ import { CreateCategory } from "@/domain/modules/category/use-cases";
 export class CreateCategoryController implements Controller {
   constructor(private readonly createCategoryUseCase: CreateCategory) {}
 
-  async handle(request: { body: AuthLogin.Input }): Promise<HttpResponse> {
+  async handle(request: { body: CreateCategory.Input }): Promise<HttpResponse> {
     const dtoRequest = {
       ...(request?.body || {}),
     };
