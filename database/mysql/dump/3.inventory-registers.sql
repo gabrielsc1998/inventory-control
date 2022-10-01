@@ -1,10 +1,10 @@
-CREATE TABLE IF NOT EXISTS `products` (
+CREATE TABLE IF NOT EXISTS `inventory_registers` (
   `id` VARCHAR(36) NOT NULL,
-  `name` VARCHAR(255) NOT NULL,
+  `product_id` VARCHAR(36) NOT NULL,
   `quantity` int,
-  `category_id` VARCHAR(36) NOT NULL,
+  `type` int,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`)
+  FOREIGN KEY (`product_id`) REFERENCES `products`(`id`)
 );
