@@ -4,6 +4,7 @@ services:
   mysqldb:
     image: mysql:5.7
     restart: always
+    container_name: mysqldb
     env_file: .env
     environment:
       - MYSQL_ROOT_PASSWORD=$DB_MYSQL_PASSWORD
@@ -12,6 +13,7 @@ services:
       - $DB_MYSQL_PORT:$DB_MYSQL_PORT
     volumes:
       - db:/var/lib/mysql
+      - ./database/mysql/dump/:/docker-entrypoint-initdb.d/
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:$DB_MYSQL_PORT"]
 
