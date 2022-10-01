@@ -4,9 +4,15 @@ import { HttpResponse } from "@/application/contracts/http";
 import { AddProduct } from "@/domain/modules/product/use-cases";
 import { Controller } from "@/application/contracts/controllers";
 import { InvalidParamError, NotFoundError } from "@/domain/errors";
+import { InventoryRegisterType } from "@/domain/modules/inventory-register/types";
+import { CreateInventoryRegister } from "@/domain/modules/inventory-register/use-cases";
+import { CreateInventoryRegisterUseCase } from "@/application/modules/inventory-register/use-cases/create";
 
 export class AddProductController implements Controller {
-  constructor(private readonly addProductUseCase: AddProduct) {}
+  constructor(
+    private readonly addProductUseCase: AddProduct,
+    private readonly createRegister: CreateInventoryRegisterUseCase
+  ) {}
 
   async handle(request: { body: AddProduct.Input }): Promise<HttpResponse> {
     const dtoRequest = {
@@ -20,9 +26,8 @@ export class AddProductController implements Controller {
       return response.badRequest(new Error(`${fieldError} not provided`));
     }
 
-    const output = await this.addProductUseCase.execute(
-      dtoRequest as AddProduct.Input
-    );
+    const dtoAddProduct = dtoRequest as AddProduct.Input;
+    const output = await this.addProductUseCase.execute(dtoAddProduct);
 
     const productNotFound = output instanceof NotFoundError;
     if (productNotFound) {
@@ -33,6 +38,14 @@ export class AddProductController implements Controller {
     if (hasError) {
       return response.badRequest(output);
     }
+
+    const dtoCreateInventoryRegister: CreateInventoryRegister.Input = {
+      productId: dtoAddProduct.id,
+      quantity: dtoAddProduct.quantity,
+      type: InventoryRegisterType.INPUT,
+    };
+
+    await this.createRegister.execute(dtoCreateInventoryRegister);
 
     return response.ok(output);
   }

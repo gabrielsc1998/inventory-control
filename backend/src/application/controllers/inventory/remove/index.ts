@@ -1,12 +1,18 @@
 import * as response from "@/application/helpers";
 import { hasAllFields } from "@/application/validators";
 import { HttpResponse } from "@/application/contracts/http";
-import { RemoveProduct } from "@/domain/modules/product/use-cases";
 import { Controller } from "@/application/contracts/controllers";
 import { InvalidParamError, NotFoundError } from "@/domain/errors";
+import { RemoveProduct } from "@/domain/modules/product/use-cases";
+import { InventoryRegisterType } from "@/domain/modules/inventory-register/types";
+import { CreateInventoryRegister } from "@/domain/modules/inventory-register/use-cases";
+import { CreateInventoryRegisterUseCase } from "@/application/modules/inventory-register/use-cases/create";
 
 export class RemoveProductController implements Controller {
-  constructor(private readonly addProductUseCase: RemoveProduct) {}
+  constructor(
+    private readonly addProductUseCase: RemoveProduct,
+    private readonly createInventoryRegister: CreateInventoryRegisterUseCase
+  ) {}
 
   async handle(request: { body: RemoveProduct.Input }): Promise<HttpResponse> {
     const dtoRequest = {
@@ -20,9 +26,8 @@ export class RemoveProductController implements Controller {
       return response.badRequest(new Error(`${fieldError} not provided`));
     }
 
-    const output = await this.addProductUseCase.execute(
-      dtoRequest as RemoveProduct.Input
-    );
+    const dtoRemoveProduct = dtoRequest as RemoveProduct.Input;
+    const output = await this.addProductUseCase.execute(dtoRemoveProduct);
 
     const productNotFound = output instanceof NotFoundError;
     if (productNotFound) {
@@ -38,6 +43,14 @@ export class RemoveProductController implements Controller {
     if (unavailableQuantity) {
       return response.badRequest(output);
     }
+
+    const dtoCreateInventoryRegister: CreateInventoryRegister.Input = {
+      productId: dtoRemoveProduct.id,
+      quantity: dtoRemoveProduct.quantity,
+      type: InventoryRegisterType.OUTPUT,
+    };
+
+    await this.createInventoryRegister.execute(dtoCreateInventoryRegister);
 
     return response.ok(output);
   }

@@ -1,27 +1,42 @@
 import { badRequest, notFound, ok } from "@/application/helpers";
 import { Controller } from "@/application/contracts/controllers";
 import { InvalidParamError, NotFoundError } from "@/domain/errors";
+import { IDGeneratorMock } from "@/common/tests/mocks/infra/gateways";
 import { ProductRepositoryInMemory } from "@/infra/repositories/product/memory";
+import { InventoryRegisterType } from "@/domain/modules/inventory-register/types";
 import { RemoveProductUseCase } from "@/application/modules/product/use-cases/remove";
+import { CreateInventoryRegister } from "@/domain/modules/inventory-register/use-cases";
+import { InventoryRegisterRepositoryInMemory } from "@/infra/repositories/inventory-register/memory";
+import { CreateInventoryRegisterUseCase } from "@/application/modules/inventory-register/use-cases/create";
 
 import { RemoveProductController } from "..";
 
 type SUT = {
   removeProductUseCase: RemoveProductUseCase;
   removeProductController: Controller;
+  createInventoryRegisterUseCase: CreateInventoryRegister;
 };
 
 const makeSut = (): SUT => {
   const productRepository = new ProductRepositoryInMemory();
   const removeProductUseCase = new RemoveProductUseCase(productRepository);
 
+  const idGeneretor = IDGeneratorMock;
+  const registerRepository = new InventoryRegisterRepositoryInMemory();
+  const createInventoryRegisterUseCase = new CreateInventoryRegisterUseCase(
+    idGeneretor,
+    registerRepository
+  );
+
   const removeProductController = new RemoveProductController(
-    removeProductUseCase
+    removeProductUseCase,
+    createInventoryRegisterUseCase
   );
 
   return {
     removeProductUseCase,
     removeProductController,
+    createInventoryRegisterUseCase,
   };
 };
 
@@ -47,10 +62,20 @@ describe("Remove Product [ Controller ]", () => {
       .spyOn(sut.removeProductUseCase, "execute")
       .mockImplementation(() => Promise.resolve(mockUseCaseOutput));
 
+    const spyInventoryRegisterUseCase = jest.spyOn(
+      sut.createInventoryRegisterUseCase,
+      "execute"
+    );
+
     const output = await sut.removeProductController.handle(input);
 
     expect(output).toMatchObject(ok(mockUseCaseOutput));
     expect(spyUseCase).toBeCalledWith(input.body);
+    expect(spyInventoryRegisterUseCase).toBeCalledWith({
+      productId: input.body.id,
+      quantity: input.body.quantity,
+      type: InventoryRegisterType.OUTPUT,
+    });
   });
 
   it("should return error when the product not exists", async () => {
@@ -66,10 +91,16 @@ describe("Remove Product [ Controller ]", () => {
       .spyOn(sut.removeProductUseCase, "execute")
       .mockImplementation(() => Promise.resolve(mockError));
 
+    const spyInventoryRegisterUseCase = jest.spyOn(
+      sut.createInventoryRegisterUseCase,
+      "execute"
+    );
+
     const output = await sut.removeProductController.handle(input);
 
     expect(output).toMatchObject(notFound(mockError));
     expect(spyUseCase).toBeCalledWith(input.body);
+    expect(spyInventoryRegisterUseCase).not.toBeCalled();
   });
 
   it("should return error when the quantity is unavailable", async () => {
