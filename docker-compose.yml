@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  mysqldb:
+    image: mysql:5.7
+    restart: always
+    env_file: .env
+    environment:
+      - MYSQL_ROOT_PASSWORD=$DB_MYSQL_PASSWORD
+      - MYSQL_DATABASE=$DB_MYSQL_DATABASE
+    ports:
+      - $DB_MYSQL_PORT:$DB_MYSQL_PORT
+    volumes:
+      - db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:$DB_MYSQL_PORT"]
+
+  backend:
+    image: node:latest
+    env_file: .env
+    container_name: backend
+    restart: always
+    working_dir: /usr/src/backend
+    volumes:
+      - ./backend:/usr/src/backend
+    links:
+      - mysqldb
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+    ports:
+      - $SERVER_PORT:$SERVER_PORT
+    entrypoint: ["bash", "backend-start.sh"]
+
+volumes:
+  db:
