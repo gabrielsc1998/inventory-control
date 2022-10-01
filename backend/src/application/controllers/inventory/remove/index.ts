@@ -8,10 +8,10 @@ import { InventoryRegisterType } from "@/domain/modules/inventory-register/types
 import { CreateInventoryRegister } from "@/domain/modules/inventory-register/use-cases";
 import { CreateInventoryRegisterUseCase } from "@/application/modules/inventory-register/use-cases/create";
 
-export class RemoveProductController implements Controller {
+export class RemoveInventoryProductController implements Controller {
   constructor(
     private readonly addProductUseCase: RemoveProduct,
-    private readonly createInventoryRegister: CreateInventoryRegisterUseCase
+    private readonly createInventoryRegister: CreateInventoryRegister
   ) {}
 
   async handle(request: { body: RemoveProduct.Input }): Promise<HttpResponse> {

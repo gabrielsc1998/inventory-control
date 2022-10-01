@@ -1,7 +1,7 @@
 import {
-  makeAddProductController,
-  makeRemoveProductController,
-} from "@/main/application/controllers/products";
+  makeAddInventoryProductController,
+  makeRemoveInventoryProductController,
+} from "@/main/application/controllers/inventory";
 import { Routes } from "@/application/contracts/routes";
 import { makeAuthMiddleware } from "@/main/application/middlewares/auth";
 
@@ -9,13 +9,13 @@ const productRoutes: Routes = {
   list: {
     method: "POST",
     path: "/inventory/add",
-    controller: makeAddProductController(),
+    controller: makeAddInventoryProductController(),
     middleware: makeAuthMiddleware(),
   },
   getById: {
     method: "POST",
     path: "/inventory/sub",
-    controller: makeRemoveProductController(),
+    controller: makeRemoveInventoryProductController(),
     middleware: makeAuthMiddleware(),
   },
 };

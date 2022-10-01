@@ -9,7 +9,7 @@ import { CreateInventoryRegister } from "@/domain/modules/inventory-register/use
 import { InventoryRegisterRepositoryInMemory } from "@/infra/repositories/inventory-register/memory";
 import { CreateInventoryRegisterUseCase } from "@/application/modules/inventory-register/use-cases/create";
 
-import { AddProductController } from "..";
+import { AddInventoryProductController } from "..";
 
 type SUT = {
   addProductUseCase: AddProductUseCase;
@@ -28,7 +28,7 @@ const makeSut = (): SUT => {
     registerRepository
   );
 
-  const addProductController = new AddProductController(
+  const addProductController = new AddInventoryProductController(
     addProductUseCase,
     createInventoryRegisterUseCase
   );
@@ -42,7 +42,7 @@ const makeSut = (): SUT => {
 
 let sut: SUT = null;
 
-describe("Add Product [ Controller ]", () => {
+describe("Add Inventory Product [ Controller ]", () => {
   beforeAll(() => (sut = makeSut()));
   beforeEach(() => jest.clearAllMocks());
 
