@@ -49,13 +49,13 @@ describe("Remove Inventory Product [ Controller ]", () => {
   it("should remove products successfully", async () => {
     const input = {
       body: {
-        id: "1",
+        productId: "1",
         quantity: 10,
       },
     };
 
     const mockUseCaseOutput = {
-      id: input.body.id,
+      id: input.body.productId,
       quantity: 20 - input.body.quantity,
     };
     const spyUseCase = jest
@@ -70,9 +70,12 @@ describe("Remove Inventory Product [ Controller ]", () => {
     const output = await sut.removeProductController.handle(input);
 
     expect(output).toMatchObject(ok(mockUseCaseOutput));
-    expect(spyUseCase).toBeCalledWith(input.body);
+    expect(spyUseCase).toBeCalledWith({
+      id: input.body.productId,
+      quantity: input.body.quantity,
+    });
     expect(spyInventoryRegisterUseCase).toBeCalledWith({
-      productId: input.body.id,
+      productId: input.body.productId,
       quantity: input.body.quantity,
       type: InventoryRegisterType.OUTPUT,
     });
@@ -81,12 +84,14 @@ describe("Remove Inventory Product [ Controller ]", () => {
   it("should return error when the product not exists", async () => {
     const input = {
       body: {
-        id: "1",
+        productId: "1",
         quantity: 10,
       },
     };
 
-    const mockError = new NotFoundError(`Product [id = ${input.body.id}]`);
+    const mockError = new NotFoundError(
+      `Product [id = ${input.body.productId}]`
+    );
     const spyUseCase = jest
       .spyOn(sut.removeProductUseCase, "execute")
       .mockImplementation(() => Promise.resolve(mockError));
@@ -99,14 +104,17 @@ describe("Remove Inventory Product [ Controller ]", () => {
     const output = await sut.removeProductController.handle(input);
 
     expect(output).toMatchObject(notFound(mockError));
-    expect(spyUseCase).toBeCalledWith(input.body);
+    expect(spyUseCase).toBeCalledWith({
+      id: input.body.productId,
+      quantity: input.body.quantity,
+    });
     expect(spyInventoryRegisterUseCase).not.toBeCalled();
   });
 
   it("should return error when the quantity is unavailable", async () => {
     const input = {
       body: {
-        id: "1",
+        productId: "1",
         quantity: 100,
       },
     };
@@ -119,24 +127,31 @@ describe("Remove Inventory Product [ Controller ]", () => {
     const output = await sut.removeProductController.handle(input);
 
     expect(output).toMatchObject(badRequest(mockError));
-    expect(spyUseCase).toBeCalledWith(input.body);
+    expect(spyUseCase).toBeCalledWith({
+      id: input.body.productId,
+      quantity: input.body.quantity,
+    });
   });
 
   it("should return an error when the input is null", async () => {
     const output = await sut.removeProductController.handle(null);
-    expect(output).toMatchObject(badRequest(new Error(`id not provided`)));
+    expect(output).toMatchObject(
+      badRequest(new Error(`productId not provided`))
+    );
   });
 
   it("should return an error when the id is null", async () => {
     const output = await sut.removeProductController.handle({
-      body: { id: null, quantity: 1 },
+      body: { productId: null, quantity: 1 },
     });
-    expect(output).toMatchObject(badRequest(new Error(`id not provided`)));
+    expect(output).toMatchObject(
+      badRequest(new Error(`productId not provided`))
+    );
   });
 
   it("should return an error when the quantity is null", async () => {
     const output = await sut.removeProductController.handle({
-      body: { id: "product-id", quantity: null },
+      body: { productId: "product-id", quantity: null },
     });
     expect(output).toMatchObject(
       badRequest(new Error(`quantity not provided`))
@@ -146,7 +161,7 @@ describe("Remove Inventory Product [ Controller ]", () => {
   it("should return an error when the use case find a invalid param", async () => {
     const input = {
       body: {
-        id: "invalid-id",
+        productId: "invalid-id",
         quantity: 10,
       },
     };
@@ -159,6 +174,9 @@ describe("Remove Inventory Product [ Controller ]", () => {
     const output = await sut.removeProductController.handle(input);
 
     expect(output).toMatchObject(badRequest(mockError));
-    expect(spyUseCase).toBeCalledWith(input.body);
+    expect(spyUseCase).toBeCalledWith({
+      id: input.body.productId,
+      quantity: input.body.quantity,
+    });
   });
 });

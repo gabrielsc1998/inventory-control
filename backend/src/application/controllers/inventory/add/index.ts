@@ -6,7 +6,11 @@ import { Controller } from "@/application/contracts/controllers";
 import { InvalidParamError, NotFoundError } from "@/domain/errors";
 import { InventoryRegisterType } from "@/domain/modules/inventory-register/types";
 import { CreateInventoryRegister } from "@/domain/modules/inventory-register/use-cases";
-import { CreateInventoryRegisterUseCase } from "@/application/modules/inventory-register/use-cases/create";
+
+export type AddInventoryProductInput = {
+  productId: string;
+  quantity: number;
+};
 
 export class AddInventoryProductController implements Controller {
   constructor(
@@ -14,19 +18,24 @@ export class AddInventoryProductController implements Controller {
     private readonly createRegister: CreateInventoryRegister
   ) {}
 
-  async handle(request: { body: AddProduct.Input }): Promise<HttpResponse> {
+  async handle(request: {
+    body: AddInventoryProductInput;
+  }): Promise<HttpResponse> {
     const dtoRequest = {
       ...(request?.body || {}),
-    };
+    } as AddInventoryProductInput;
 
-    const expectedFields = ["id", "quantity"];
+    const expectedFields = ["productId", "quantity"];
 
     const fieldError = hasAllFields({ expectedFields, dto: dtoRequest });
     if (fieldError) {
       return response.badRequest(new Error(`${fieldError} not provided`));
     }
 
-    const dtoAddProduct = dtoRequest as AddProduct.Input;
+    const dtoAddProduct = {
+      id: dtoRequest.productId,
+      quantity: dtoRequest.quantity,
+    };
     const output = await this.addProductUseCase.execute(dtoAddProduct);
 
     const productNotFound = output instanceof NotFoundError;

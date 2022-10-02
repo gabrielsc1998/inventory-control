@@ -6,7 +6,11 @@ import { InvalidParamError, NotFoundError } from "@/domain/errors";
 import { RemoveProduct } from "@/domain/modules/product/use-cases";
 import { InventoryRegisterType } from "@/domain/modules/inventory-register/types";
 import { CreateInventoryRegister } from "@/domain/modules/inventory-register/use-cases";
-import { CreateInventoryRegisterUseCase } from "@/application/modules/inventory-register/use-cases/create";
+
+export type RemoveInventoryProductInput = {
+  productId: string;
+  quantity: number;
+};
 
 export class RemoveInventoryProductController implements Controller {
   constructor(
@@ -14,19 +18,24 @@ export class RemoveInventoryProductController implements Controller {
     private readonly createInventoryRegister: CreateInventoryRegister
   ) {}
 
-  async handle(request: { body: RemoveProduct.Input }): Promise<HttpResponse> {
+  async handle(request: {
+    body: RemoveInventoryProductInput;
+  }): Promise<HttpResponse> {
     const dtoRequest = {
       ...(request?.body || {}),
-    };
+    } as RemoveInventoryProductInput;
 
-    const expectedFields = ["id", "quantity"];
+    const expectedFields = ["productId", "quantity"];
 
     const fieldError = hasAllFields({ expectedFields, dto: dtoRequest });
     if (fieldError) {
       return response.badRequest(new Error(`${fieldError} not provided`));
     }
 
-    const dtoRemoveProduct = dtoRequest as RemoveProduct.Input;
+    const dtoRemoveProduct = {
+      id: dtoRequest.productId,
+      quantity: dtoRequest.quantity,
+    };
     const output = await this.addProductUseCase.execute(dtoRemoveProduct);
 
     const productNotFound = output instanceof NotFoundError;
