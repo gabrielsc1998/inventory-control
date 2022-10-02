@@ -13,7 +13,7 @@ export const initializeServer = (): void => {
     middleware: middlewareHandlerExpressAdapter,
   });
 
-  const PORT = 3000;
+  const PORT = Number(process.env.SERVER_PORT);
   httpServer.listen({
     port: PORT,
     callback: () => {
