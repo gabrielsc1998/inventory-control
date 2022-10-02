@@ -25,10 +25,35 @@ export class ProductRepositoryMySQL implements ProductRepository {
     ]);
   }
 
-  update(
+  async update(
     input: ProductRepository.UpdateInput
   ): Promise<ProductRepository.ProductModel> {
-    throw new Error("Method not implemented.");
+    const product = await this.findById(input.id);
+    if (!product) {
+      return null;
+    }
+
+    const newProduct = { ...product };
+
+    if (input.name) {
+      newProduct.name = input.name;
+    }
+
+    if (input.quantity) {
+      newProduct.quantity = input.quantity;
+    }
+
+    const query = `
+      UPDATE ${TABLE_NAME} 
+      SET 
+        name='${newProduct.name}',
+        quantity='${newProduct.quantity}'
+      WHERE id='${newProduct.id}'
+    `;
+
+    await this.mysql.query(query);
+
+    return newProduct;
   }
 
   async findById(id: string): Promise<ProductRepository.FindByIdOutput> {
@@ -36,7 +61,7 @@ export class ProductRepositoryMySQL implements ProductRepository {
       SELECT pd.id, pd.name, pd.quantity, pd.category_id, ct.name as category_name
         FROM ${TABLE_NAME} as pd 
         JOIN categories as ct ON ct.id = pd.category_id
-        WHERE pd.id="${id}"
+        WHERE pd.id='${id}'
         LIMIT 1
     `;
 
