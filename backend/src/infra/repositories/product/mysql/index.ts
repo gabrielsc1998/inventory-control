@@ -33,16 +33,16 @@ export class ProductRepositoryMySQL implements ProductRepository {
 
   async findById(id: string): Promise<ProductRepository.FindByIdOutput> {
     const query = `
-      SELECT *, ct.name as category_name 
+      SELECT pd.id, pd.name, pd.quantity, pd.category_id, ct.name as category_name
         FROM ${TABLE_NAME} as pd 
-        JOIN categories as ct ON ct.id = pd.id 
-        WHERE pd.id=${id} 
+        JOIN categories as ct ON ct.id = pd.category_id
+        WHERE pd.id="${id}"
         LIMIT 1
     `;
 
     const product = (await this.mysql.query(query)) as Array<ProductMySqlModel>;
 
-    if (!product) {
+    if (!product[0]) {
       return null;
     }
 
@@ -65,9 +65,9 @@ export class ProductRepositoryMySQL implements ProductRepository {
     }
 
     const query = `
-      SELECT *, ct.name as category_name 
+      SELECT pd.id, pd.name, pd.quantity, pd.category_id, ct.name as category_name 
       FROM ${TABLE_NAME} as pd 
-      JOIN categories as ct ON ct.id = pd.id 
+      JOIN categories as ct ON ct.id = pd.category_id
       ${filters}
       ${pagination} 
     `;
