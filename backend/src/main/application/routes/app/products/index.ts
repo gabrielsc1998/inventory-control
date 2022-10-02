@@ -15,7 +15,7 @@ const productRoutes: Routes = {
   },
   getById: {
     method: "GET",
-    path: "/products:id",
+    path: "/products/:id",
     controller: makeGetOneProductController(),
     middleware: makeAuthMiddleware(),
   },
