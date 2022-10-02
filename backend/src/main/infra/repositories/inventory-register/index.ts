@@ -1,7 +1,7 @@
 import { InventoryRegisterRepository } from "@/domain/modules/inventory-register/repository";
-import { InventoryRegisterRepositoryInMemory } from "@/infra/repositories/inventory-register/memory";
+import { InventoryRegisterRepositoryMySQL } from "@/infra/repositories/inventory-register/mysql";
 
 export const makeInventoryRegisterRepository =
   (): InventoryRegisterRepository => {
-    return new InventoryRegisterRepositoryInMemory();
+    return new InventoryRegisterRepositoryMySQL();
   };

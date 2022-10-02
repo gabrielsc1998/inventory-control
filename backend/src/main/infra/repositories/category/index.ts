@@ -1,6 +1,6 @@
 import { CategoryRepository } from "@/domain/modules/category/repository";
-import { CategoryRepositoryInMemory } from "@/infra/repositories/category/memory";
+import { CategoryRepositoryMySQL } from "@/infra/repositories/category/mysql";
 
 export const makeCategoryRepository = (): CategoryRepository => {
-  return new CategoryRepositoryInMemory();
+  return new CategoryRepositoryMySQL();
 };

@@ -1,6 +1,6 @@
 import { ProductRepository } from "@/domain/modules/product/repository";
-import { ProductRepositoryInMemory } from "@/infra/repositories/product/memory";
+import { ProductRepositoryMySQL } from "@/infra/repositories/product/mysql";
 
 export const makeProductRepository = (): ProductRepository => {
-  return new ProductRepositoryInMemory();
+  return new ProductRepositoryMySQL();
 };
