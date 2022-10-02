@@ -19,11 +19,13 @@ export class CategoryRepositoryMySQL implements CategoryRepository {
   }
 
   async findById(id: string): Promise<CategoryRepository.CategoryModel> {
-    const query = `SELECT * FROM ${TABLE_NAME} WHERE id=${id}`;
-    const category = await this.mysql.query(query);
-    if (!category) {
+    const query = `SELECT * FROM ${TABLE_NAME} WHERE id='${id}' LIMIT 1`;
+    const category = (await this.mysql.query(
+      query
+    )) as Array<CategoryRepository.CategoryModel>;
+    if (!category[0]) {
       return null;
     }
-    return category as CategoryRepository.CategoryModel;
+    return category[0];
   }
 }
