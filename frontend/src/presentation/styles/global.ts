@@ -54,6 +54,7 @@ const GlobalStyles: GlobalStyleComponent<
         min-height: 100vh;
         font-family: ${theme.font.family};
         font-size: ${theme.font.sizes.medium};
+        color: ${theme.colors.neutral.darkGray};
         background-color: ${theme.colors.neutral.white};
       }
     `}

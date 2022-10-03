@@ -24,6 +24,7 @@ declare module "styled-components" {
     colors: {
       ui: {
         primary: string;
+        secondary: string;
       };
       general: {
         blue: string;

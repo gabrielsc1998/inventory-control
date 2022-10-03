@@ -31,7 +31,8 @@ const theme: DefaultTheme = {
   },
   colors: {
     ui: {
-      primary: "#8ab3f0",
+      primary: "#518BBB",
+      secondary: "#0A5986",
     },
     general: {
       blue: "#3498DB",
