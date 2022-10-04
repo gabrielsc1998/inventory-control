@@ -1,4 +1,4 @@
-export interface InputProps {
+export interface InputProps extends InputUiLibProps {
   id: string;
   label: string;
   variant?: "outline" | "flushed";
@@ -6,6 +6,8 @@ export interface InputProps {
   icon?: React.ReactElement;
   placeholder?: string;
 }
+
+import { InputProps as InputUiLibProps } from "@chakra-ui/react";
 
 import * as S from "./styles";
 
@@ -21,6 +23,7 @@ const Input = (props: InputProps): JSX.Element => {
           type={props.type}
           hasicon={String(hasIcon)}
           placeholder={props.placeholder}
+          {...props}
         />
         {hasIcon ? <S.IconWrapper>{props.icon}</S.IconWrapper> : null}
       </S.InputWrapper>
