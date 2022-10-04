@@ -1,6 +1,7 @@
 import { ROUTES } from "common/routes";
 import { LOCAL_STORAGE } from "common/keys";
 import { Login } from "domain/modules/auth/use-cases";
+import { error, success } from "domain/helpers/status";
 import { LocalStorage } from "domain/contracts/gateways";
 import { ServiceAPI } from "application/contracts/services/api";
 import { ServiceAPIMock } from "common/test/mocks/application/services/api";
@@ -55,7 +56,7 @@ describe("Login [ Use Case ]", () => {
     };
     const output = await sut.loginUseCase.execute(input);
 
-    expect(output).toMatchObject({ status: "success" });
+    expect(output).toMatchObject(success());
     expect(spyServiceAPI).toBeCalledWith({
       method: "post",
       endpoint: ROUTES.LOGIN,
@@ -85,10 +86,7 @@ describe("Login [ Use Case ]", () => {
     const input: Login.Input = null;
     const output = await sut.loginUseCase.execute(input);
 
-    expect(output).toMatchObject({
-      status: "error",
-      error: new Error("Invalid credentials"),
-    });
+    expect(output).toMatchObject(error(new Error("Invalid credentials")));
     expect(spyServiceAPI).toBeCalledWith({
       method: "post",
       endpoint: ROUTES.LOGIN,
@@ -104,10 +102,7 @@ describe("Login [ Use Case ]", () => {
     const input: Login.Input = null;
     const output = await sut.loginUseCase.execute(input);
 
-    expect(output).toMatchObject({
-      status: "error",
-      error: new Error("some error"),
-    });
+    expect(output).toMatchObject(error(new Error("some error")));
     expect(spyServiceAPI).toBeCalledWith({
       method: "post",
       endpoint: ROUTES.LOGIN,
@@ -123,10 +118,7 @@ describe("Login [ Use Case ]", () => {
     const input: Login.Input = null;
     const output = await sut.loginUseCase.execute(input);
 
-    expect(output).toMatchObject({
-      status: "error",
-      error: new Error("some error"),
-    });
+    expect(output).toMatchObject(error(new Error("some error")));
     expect(spyServiceAPI).toBeCalledWith({
       method: "post",
       endpoint: ROUTES.LOGIN,

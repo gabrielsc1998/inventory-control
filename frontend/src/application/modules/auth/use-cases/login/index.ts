@@ -1,5 +1,6 @@
 import { ROUTES } from "common/routes";
 import { LOCAL_STORAGE } from "common/keys";
+import { error, success } from "domain/helpers/status";
 import { Login } from "domain/modules/auth/use-cases";
 import { LocalStorage } from "domain/contracts/gateways";
 import { ServiceAPI } from "application/contracts/services/api";
@@ -20,10 +21,6 @@ export class LoginUseCase implements Login {
     private readonly localStorage: LocalStorage
   ) {}
 
-  private error(error: Error): Login.Output {
-    return { status: "error", error };
-  }
-
   async execute(input: Login.Input): Promise<Login.Output> {
     try {
       const output = await this.serviceAPI.send<Input, Output>({
@@ -34,7 +31,7 @@ export class LoginUseCase implements Login {
 
       const hasError = output instanceof Error;
       if (hasError) {
-        return this.error(output);
+        return error(output);
       }
 
       const { status, data } = output;
@@ -45,12 +42,12 @@ export class LoginUseCase implements Login {
           value: data.refreshToken,
         });
 
-        return { status: "success" };
+        return success();
       } else {
-        return this.error(new Error("Invalid credentials"));
+        return error(new Error("Invalid credentials"));
       }
-    } catch (error) {
-      return this.error(error);
+    } catch (exception) {
+      return error(exception);
     }
   }
 }

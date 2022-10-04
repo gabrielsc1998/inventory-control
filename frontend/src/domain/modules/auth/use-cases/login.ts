@@ -1,3 +1,5 @@
+import { STATUS_TYPES } from "common/constants";
+
 export interface Login {
   execute(input: Login.Input): Promise<Login.Output>;
 }
@@ -8,5 +10,5 @@ export namespace Login {
     password: string;
   };
 
-  export type Output = { status: "success" | "error"; error?: Error };
+  export type Output = { status: STATUS_TYPES; error?: Error };
 }
