@@ -2,12 +2,15 @@ import { useState } from "react";
 
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 
+import { TableData } from "..";
+
 import * as S from "./styles";
 
 export interface PaginatorProps {
   total: number;
   pageSize: number;
   onPageChange?: (page: number) => void;
+  data: Array<TableData>;
 }
 
 const Paginator = (props: PaginatorProps): JSX.Element => {
@@ -35,7 +38,11 @@ const Paginator = (props: PaginatorProps): JSX.Element => {
     <S.Container>
       <S.Wrapper>
         <S.Label>
-          Mostrando {getInitialValue()} a {getEndValue()} de {props.total}
+          {props.data.length === 0
+            ? "Sem dados"
+            : `Mostrando ${getInitialValue()} a ${getEndValue()} de ${
+                props.total
+              }}`}
         </S.Label>
         <S.WrapperButttons>
           <S.Button

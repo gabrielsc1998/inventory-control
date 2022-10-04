@@ -36,6 +36,7 @@ const Table = (props: TableProps): JSX.Element => {
         total={props.total}
         pageSize={props.pageSize}
         onPageChange={props.onPageChange}
+        data={props.data}
       />
     </>
   );
