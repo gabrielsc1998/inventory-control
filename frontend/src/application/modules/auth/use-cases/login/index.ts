@@ -20,6 +20,10 @@ export class LoginUseCase implements Login {
     private readonly localStorage: LocalStorage
   ) {}
 
+  private error(error: Error): Login.Output {
+    return { status: "error", error };
+  }
+
   async execute(input: Login.Input): Promise<Login.Output> {
     try {
       const output = await this.serviceAPI.send<Input, Output>({
@@ -30,7 +34,7 @@ export class LoginUseCase implements Login {
 
       const hasError = output instanceof Error;
       if (hasError) {
-        return output;
+        return this.error(output);
       }
 
       const { status, data } = output;
@@ -40,11 +44,13 @@ export class LoginUseCase implements Login {
           key: LOCAL_STORAGE.REFRESH_TOKEN,
           value: data.refreshToken,
         });
+
+        return { status: "success" };
       } else {
-        return new Error("Invalid credentials");
+        return this.error(new Error("Invalid credentials"));
       }
     } catch (error) {
-      return error;
+      return this.error(error);
     }
   }
 }

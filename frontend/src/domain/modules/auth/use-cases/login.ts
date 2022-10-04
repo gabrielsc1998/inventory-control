@@ -8,5 +8,5 @@ export namespace Login {
     password: string;
   };
 
-  export type Output = void | Error;
+  export type Output = { status: "success" | "error"; error?: Error };
 }

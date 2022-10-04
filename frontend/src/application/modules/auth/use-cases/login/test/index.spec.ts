@@ -55,7 +55,7 @@ describe("Login [ Use Case ]", () => {
     };
     const output = await sut.loginUseCase.execute(input);
 
-    expect(output).toBeUndefined();
+    expect(output).toMatchObject({ status: "success" });
     expect(spyServiceAPI).toBeCalledWith({
       method: "post",
       endpoint: ROUTES.LOGIN,
@@ -85,7 +85,10 @@ describe("Login [ Use Case ]", () => {
     const input: Login.Input = null;
     const output = await sut.loginUseCase.execute(input);
 
-    expect(output).toMatchObject(new Error("Invalid credentials"));
+    expect(output).toMatchObject({
+      status: "error",
+      error: new Error("Invalid credentials"),
+    });
     expect(spyServiceAPI).toBeCalledWith({
       method: "post",
       endpoint: ROUTES.LOGIN,
@@ -101,7 +104,10 @@ describe("Login [ Use Case ]", () => {
     const input: Login.Input = null;
     const output = await sut.loginUseCase.execute(input);
 
-    expect(output).toMatchObject(new Error("some error"));
+    expect(output).toMatchObject({
+      status: "error",
+      error: new Error("some error"),
+    });
     expect(spyServiceAPI).toBeCalledWith({
       method: "post",
       endpoint: ROUTES.LOGIN,
@@ -117,7 +123,10 @@ describe("Login [ Use Case ]", () => {
     const input: Login.Input = null;
     const output = await sut.loginUseCase.execute(input);
 
-    expect(output).toMatchObject(new Error("some error"));
+    expect(output).toMatchObject({
+      status: "error",
+      error: new Error("some error"),
+    });
     expect(spyServiceAPI).toBeCalledWith({
       method: "post",
       endpoint: ROUTES.LOGIN,
