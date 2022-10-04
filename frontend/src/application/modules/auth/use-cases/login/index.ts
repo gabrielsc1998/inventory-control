@@ -1,8 +1,8 @@
 import { ROUTES } from "common/routes";
-import { Login } from "domain/modules/auth/use-cases";
-import { ServiceAPI } from "application/contracts/services/api";
-import { LocalStorage } from "domain/contracts/gateways";
 import { LOCAL_STORAGE } from "common/keys";
+import { Login } from "domain/modules/auth/use-cases";
+import { LocalStorage } from "domain/contracts/gateways";
+import { ServiceAPI } from "application/contracts/services/api";
 
 type Input = {
   email: string;

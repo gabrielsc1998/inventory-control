@@ -1,11 +1,10 @@
-import { ServiceAPI } from "application/contracts/services/api";
-import { LOCAL_STORAGE } from "common/keys";
 import { ROUTES } from "common/routes";
-import { ServiceAPIMock } from "common/test/mocks/application/services/api";
-
-import { LocalStorageMock } from "common/test/mocks/infra/gateways/local-storage";
-import { LocalStorage } from "domain/contracts/gateways";
+import { LOCAL_STORAGE } from "common/keys";
 import { Login } from "domain/modules/auth/use-cases";
+import { LocalStorage } from "domain/contracts/gateways";
+import { ServiceAPI } from "application/contracts/services/api";
+import { ServiceAPIMock } from "common/test/mocks/application/services/api";
+import { LocalStorageMock } from "common/test/mocks/infra/gateways/local-storage";
 
 import { LoginUseCase } from "..";
 
