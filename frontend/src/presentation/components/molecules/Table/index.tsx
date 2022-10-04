@@ -9,7 +9,7 @@ export type TableColumn = {
   key: string;
 };
 
-export type TableData = Record<string, unknown>;
+export type TableData = { [key: string]: any };
 
 interface TableProps {
   columns: Array<TableColumn>;
