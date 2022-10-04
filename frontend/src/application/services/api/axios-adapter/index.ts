@@ -34,8 +34,6 @@ export class ServiceAPIAxiosAdapter implements ServiceAPI {
   }
 
   private configInterceptors(): void {
-    this.client.interceptors.request.use(
-      tokenMiddleware(this.client, this.localStorage)
-    );
+    this.client.interceptors.request.use(tokenMiddleware(this.localStorage));
   }
 }
