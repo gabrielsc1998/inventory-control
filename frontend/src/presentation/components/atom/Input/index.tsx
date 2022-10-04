@@ -19,7 +19,7 @@ const Input = (props: InputProps): JSX.Element => {
           id={props.id}
           variant={props.variant}
           type={props.type}
-          hasIcon={hasIcon}
+          hasicon={String(hasIcon)}
           placeholder={props.placeholder}
         />
         {hasIcon ? <S.IconWrapper>{props.icon}</S.IconWrapper> : null}

@@ -7,14 +7,14 @@ export const Container = styled.div`
 `;
 
 interface InputExtendedProps {
-  hasIcon?: boolean;
+  hasicon?: boolean;
 }
 
 export const Input = styled(InputUiLib)<InputExtendedProps>`
-  ${({ theme, hasIcon }) => css`
+  ${({ theme, hasicon }) => css`
     && {
       font-size: ${theme.font.sizes.small};
-      padding-right: ${hasIcon ? "30px" : 0};
+      padding-right: ${hasicon ? "30px" : 0};
     }
   `}
 `;
