@@ -1,9 +1,8 @@
 import { useState } from "react";
 
-import Image from "next/image";
-
 import Input from "presentation/components/atom/Input";
 import Button from "presentation/components/atom/Button";
+import Logo from "presentation/components/molecules/Logo";
 import { makeLoginUseCase } from "main/application/modules/auth/use-cases";
 import InputPassword from "presentation/components/molecules/Input-Password";
 
@@ -32,13 +31,7 @@ const LoginScreen = (): JSX.Element => {
   return (
     <S.Container>
       <S.WrapperForm>
-        <Image
-          priority
-          src={"/imgs/logo.svg"}
-          width="100%"
-          height="100%"
-          alt="logo"
-        />
+        <Logo />
         <S.WrapperFormFields>
           <Input
             id="input-email-id"
