@@ -23,7 +23,11 @@ const Paginator = (props: PaginatorProps): JSX.Element => {
   };
 
   const handleControlPage = (type: "add" | "sub"): void => {
-    if (disabledButton) {
+    if (type === "add" && disabledNextButton) {
+      return;
+    }
+
+    if (type === "sub" && disabledPreviousButton) {
       return;
     }
 
@@ -38,7 +42,9 @@ const Paginator = (props: PaginatorProps): JSX.Element => {
     setPage(newPageValue);
   };
 
-  const disabledButton = getEndValue() >= props.total;
+  const disabledPreviousButton = page === 1;
+  const disabledNextButton = getEndValue() >= props.total;
+
   return (
     <S.Container>
       <S.Wrapper>
@@ -52,14 +58,15 @@ const Paginator = (props: PaginatorProps): JSX.Element => {
         <S.WrapperButttons>
           <S.Button
             aria-label="Next"
-            disabled={page === 1}
+            disabled={disabledPreviousButton}
             icon={<ChevronLeftIcon />}
             onClick={() => handleControlPage("sub")}
           />
           <S.Button
             aria-label="Previous"
-            disabled={disabledButton}
-            icon={<ChevronRightIcon onClick={() => handleControlPage("add")} />}
+            disabled={disabledNextButton}
+            icon={<ChevronRightIcon />}
+            onClick={() => handleControlPage("add")}
           />
         </S.WrapperButttons>
       </S.Wrapper>
