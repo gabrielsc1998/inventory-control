@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 
 import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
 
-import { STATUS } from "common/constants";
-import { useToast } from "presentation/hooks";
+import { useReload } from "presentation/hooks/reload";
 import Button from "presentation/components/atom/Button";
 import { ProductModel } from "domain/modules/product/model";
 import { Option } from "presentation/components/atom/Select";
+import { DEFAULT_PAGE_SIZE, STATUS } from "common/constants";
 import Table, { TableColumn } from "presentation/components/organisms/Table";
 import { makeListProductsUseCase } from "main/application/modules/product/use-cases";
 import { makeListCategoriesUseCase } from "main/application/modules/category/use-cases";
@@ -18,7 +18,7 @@ import ModalCreateCategory from "./components/Modal-Create-Category";
 import ModalRemoveProducts from "./components/Modal-Remove-Products";
 
 const ProductsScreen = (): JSX.Element => {
-  const toast = useToast();
+  const reload = useReload();
 
   const listProductsUseCase = makeListProductsUseCase();
   const listCategoriesUseCase = makeListCategoriesUseCase();
@@ -30,10 +30,17 @@ const ProductsScreen = (): JSX.Element => {
     removeProducts: false,
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState(defaultModalStatus);
   const [currentProductId, setCurrentProductId] = useState("");
-  const [products, setProducts] = useState<Array<ProductModel>>([]);
   const [categories, setCategories] = useState<Array<Option>>([]);
+  const [products, setProducts] = useState<{
+    data: Array<ProductModel>;
+    total: number;
+  }>({
+    data: [],
+    total: 0,
+  });
 
   const closeModal = () => setShowModal(defaultModalStatus);
 
@@ -71,21 +78,29 @@ const ProductsScreen = (): JSX.Element => {
     },
   ];
 
-  const handleListProducts = async (): Promise<void> => {
-    const output = await listProductsUseCase.execute();
-    const hasError = output instanceof Error;
+  const handleListProducts = async (page: number): Promise<void> => {
+    const output = await listProductsUseCase.execute({
+      pagination: {
+        page: page,
+      },
+    });
+    const hasError = output instanceof Error || output.error;
 
     if (!hasError) {
       if (output.status === STATUS.SUCCESS) {
         const listOfProducts = output.data;
         setProducts(listOfProducts);
       }
+    } else {
+      if (output.error) {
+        reload.verify(output.error.message);
+      }
     }
   };
 
   const handleListCategories = async (): Promise<void> => {
     const output = await listCategoriesUseCase.execute();
-    const hasError = output instanceof Error;
+    const hasError = output instanceof Error || output.error;
 
     if (!hasError) {
       if (output.status === STATUS.SUCCESS) {
@@ -97,12 +112,16 @@ const ProductsScreen = (): JSX.Element => {
           }))
         );
       }
+    } else {
+      if (output.error) {
+        reload.verify(output.error.message);
+      }
     }
   };
 
   useEffect(() => {
     (async () => {
-      await handleListProducts();
+      await handleListProducts(currentPage);
       await handleListCategories();
     })();
   }, []);
@@ -115,7 +134,7 @@ const ProductsScreen = (): JSX.Element => {
           open={showModal.createProduct}
           onClose={() => closeModal()}
           onNewProductCreated={async () => {
-            await handleListProducts();
+            await handleListProducts(currentPage);
             closeModal();
           }}
         />
@@ -132,7 +151,7 @@ const ProductsScreen = (): JSX.Element => {
           open={showModal.addProducts}
           onClose={() => closeModal()}
           onNewProductsAdded={async () => {
-            await handleListProducts();
+            await handleListProducts(currentPage);
             closeModal();
           }}
         />
@@ -141,7 +160,7 @@ const ProductsScreen = (): JSX.Element => {
           open={showModal.removeProducts}
           onClose={() => closeModal()}
           onProductsRemoved={async () => {
-            await handleListProducts();
+            await handleListProducts(currentPage);
             closeModal();
           }}
         />
@@ -169,10 +188,14 @@ const ProductsScreen = (): JSX.Element => {
         />
       </S.WrapperButtons>
       <Table
-        data={products}
         columns={columns}
-        total={products.length}
-        pageSize={15}
+        data={products.data}
+        total={products.total}
+        pageSize={DEFAULT_PAGE_SIZE}
+        onPageChange={async (newPage) => {
+          setCurrentPage(newPage);
+          await handleListProducts(newPage);
+        }}
       />
     </>
   );
