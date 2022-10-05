@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { STATUS } from "common/constants";
-import { useToast } from "presentation/hooks";
+import { useToast } from "presentation/hooks/toast";
 import Input from "presentation/components/atom/Input";
 import Button from "presentation/components/atom/Button";
 import Modal from "presentation/components/molecules/Modal";

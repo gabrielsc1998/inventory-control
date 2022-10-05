@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 
 import { STATUS } from "common/constants";
-import { useToast } from "presentation/hooks";
+import { useToast } from "presentation/hooks/toast";
 import { SCREEN_ROUTES } from "presentation/routes";
 import Input from "presentation/components/atom/Input";
 import Button from "presentation/components/atom/Button";
