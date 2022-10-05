@@ -5,32 +5,35 @@ import { useToast } from "presentation/hooks";
 import Input from "presentation/components/atom/Input";
 import Button from "presentation/components/atom/Button";
 import Modal from "presentation/components/molecules/Modal";
-import Select, { Option } from "presentation/components/atom/Select";
-import { makeCreateProductUseCase } from "main/application/modules/product/use-cases";
+import { makeRemoveProductsUseCase } from "main/application/modules/product/use-cases";
 
-interface ModalAddProductProps {
+interface ModalRemoveProductsProps {
+  id: string;
   open: boolean;
   onClose: () => void;
-  categories: Array<Option>;
-  onNewProductAdded: () => void;
+  onProductsRemoved: () => void;
 }
 
 import * as S from "./styles";
 
-const ModalAddProduct = (props: ModalAddProductProps): JSX.Element => {
-  const createProductUseCase = makeCreateProductUseCase();
+const ModalRemoveProducts = (props: ModalRemoveProductsProps): JSX.Element => {
+  const removeProductsUseCase = makeRemoveProductsUseCase();
 
   const toast = useToast();
 
   const [form, setForm] = useState({
-    name: "",
-    categoryId: "",
+    productId: props.id,
+    quantity: "",
   });
 
-  const disableButton = form.categoryId === "" || form.name === "";
+  const disableButton = form.quantity === "";
 
   const handleCreateProduct = async (): Promise<void> => {
-    const output = await createProductUseCase.execute(form);
+    const output = await removeProductsUseCase.execute({
+      productId: form.productId,
+      quantity: Number(form.quantity),
+    });
+
     const hasError = output instanceof Error;
 
     let showError = false;
@@ -38,9 +41,9 @@ const ModalAddProduct = (props: ModalAddProductProps): JSX.Element => {
       if (output.status === STATUS.SUCCESS) {
         toast.show({
           type: "success",
-          title: "Novo produto adicionado!",
+          title: "Produtos removidos do estoque!",
         });
-        props.onNewProductAdded();
+        props.onProductsRemoved();
       } else {
         showError = true;
       }
@@ -51,31 +54,25 @@ const ModalAddProduct = (props: ModalAddProductProps): JSX.Element => {
     if (showError) {
       toast.show({
         type: "error",
-        title: "Erro ao criar o produto",
+        title: "Erro ao remover os produtos",
       });
     }
   };
 
   return (
-    <Modal title="Adicionar Produto" {...props}>
+    <Modal title="Dar baixa no produto" {...props}>
       <S.Container>
         <Input
-          id="product-name-id"
-          label="Nome"
+          id="product-quantity-id"
+          type="number"
+          label="Quantidade de produtos"
           variant="flushed"
-          placeholder="Insira o nome do produto"
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-        />
-        <Select
-          placeholder="Selecione a Categoria"
-          options={props?.categories || []}
-          onChange={({ value }) =>
-            setForm({ ...form, categoryId: String(value) })
-          }
+          placeholder="Insira a quantidade"
+          onChange={(e) => setForm({ ...form, quantity: e.target.value })}
         />
         <S.WrapperButton>
           <Button
-            label="Adicionar"
+            label="Dar Baixa"
             id="create-button-id"
             disabled={disableButton}
             onClick={() => handleCreateProduct()}
@@ -86,4 +83,4 @@ const ModalAddProduct = (props: ModalAddProductProps): JSX.Element => {
   );
 };
 
-export default ModalAddProduct;
+export default ModalRemoveProducts;

@@ -7,15 +7,15 @@ import Button from "presentation/components/atom/Button";
 import Modal from "presentation/components/molecules/Modal";
 import { makeCreateCategoryUseCase } from "main/application/modules/category/use-cases";
 
-interface ModalAddCategoryProps {
+interface ModalCreateCategoryProps {
   open: boolean;
   onClose: () => void;
-  onNewCategoryAdded: () => void;
+  onNewCategoryCreated: () => void;
 }
 
 import * as S from "./styles";
 
-const ModalAddCategory = (props: ModalAddCategoryProps): JSX.Element => {
+const ModalCreateCategory = (props: ModalCreateCategoryProps): JSX.Element => {
   const createCategoryUseCase = makeCreateCategoryUseCase();
 
   const toast = useToast();
@@ -37,7 +37,7 @@ const ModalAddCategory = (props: ModalAddCategoryProps): JSX.Element => {
           type: "success",
           title: "Nova categoria adicionada!",
         });
-        props.onNewCategoryAdded();
+        props.onNewCategoryCreated();
       } else {
         showError = true;
       }
@@ -76,4 +76,4 @@ const ModalAddCategory = (props: ModalAddCategoryProps): JSX.Element => {
   );
 };
 
-export default ModalAddCategory;
+export default ModalCreateCategory;

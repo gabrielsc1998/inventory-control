@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
+
 import { STATUS } from "common/constants";
 import { useToast } from "presentation/hooks";
 import Button from "presentation/components/atom/Button";
@@ -10,8 +12,10 @@ import { makeListProductsUseCase } from "main/application/modules/product/use-ca
 import { makeListCategoriesUseCase } from "main/application/modules/category/use-cases";
 
 import * as S from "./styles";
-import ModalAddProduct from "./components/Modal-Add-Product";
-import ModalAddCategory from "./components/Modal-Add-Category";
+import ModalAddProducts from "./components/Modal-Add-Products";
+import ModalCreateProduct from "./components/Modal-Create-Product";
+import ModalCreateCategory from "./components/Modal-Create-Category";
+import ModalRemoveProducts from "./components/Modal-Remove-Products";
 
 const ProductsScreen = (): JSX.Element => {
   const toast = useToast();
@@ -19,19 +23,52 @@ const ProductsScreen = (): JSX.Element => {
   const listProductsUseCase = makeListProductsUseCase();
   const listCategoriesUseCase = makeListCategoriesUseCase();
 
-  const [showModal, setShowModal] = useState({
-    product: false,
-    category: false,
-  });
+  const defaultModalStatus = {
+    createProduct: false,
+    createCategory: false,
+    addProducts: false,
+    removeProducts: false,
+  };
+
+  const [showModal, setShowModal] = useState(defaultModalStatus);
+  const [currentProductId, setCurrentProductId] = useState("");
   const [products, setProducts] = useState<Array<ProductModel>>([]);
   const [categories, setCategories] = useState<Array<Option>>([]);
 
-  const closeModal = () => setShowModal({ product: false, category: false });
+  const closeModal = () => setShowModal(defaultModalStatus);
 
   const columns: Array<TableColumn> = [
     { header: "Nome", key: "name" },
     { header: "Categoria", key: "categoryName" },
     { header: "Quantidade", key: "quantity" },
+    {
+      header: "Dar Entrada",
+      key: "id",
+      formatter: (productId: string) => (
+        <S.ActionButton
+          icon={<ArrowBackIcon />}
+          id="add-product-id"
+          onClick={() => {
+            setCurrentProductId(productId);
+            setShowModal({ ...defaultModalStatus, addProducts: true });
+          }}
+        />
+      ),
+    },
+    {
+      header: "Dar Baixa",
+      key: "id",
+      formatter: (productId: string) => (
+        <S.ActionButton
+          icon={<ArrowForwardIcon />}
+          id="sub-product-id"
+          onClick={() => {
+            setCurrentProductId(productId);
+            setShowModal({ ...defaultModalStatus, removeProducts: true });
+          }}
+        />
+      ),
+    },
   ];
 
   const handleListProducts = async (): Promise<void> => {
@@ -73,20 +110,38 @@ const ProductsScreen = (): JSX.Element => {
   const Modals = (): JSX.Element => {
     return (
       <>
-        <ModalAddProduct
+        <ModalCreateProduct
           categories={categories}
-          open={showModal.product}
+          open={showModal.createProduct}
           onClose={() => closeModal()}
-          onNewProductAdded={async () => {
+          onNewProductCreated={async () => {
             await handleListProducts();
             closeModal();
           }}
         />
-        <ModalAddCategory
-          open={showModal.category}
+        <ModalCreateCategory
+          open={showModal.createCategory}
           onClose={() => closeModal()}
-          onNewCategoryAdded={async () => {
+          onNewCategoryCreated={async () => {
             await handleListCategories();
+            closeModal();
+          }}
+        />
+        <ModalAddProducts
+          id={currentProductId}
+          open={showModal.addProducts}
+          onClose={() => closeModal()}
+          onNewProductsAdded={async () => {
+            await handleListProducts();
+            closeModal();
+          }}
+        />
+        <ModalRemoveProducts
+          id={currentProductId}
+          open={showModal.removeProducts}
+          onClose={() => closeModal()}
+          onProductsRemoved={async () => {
+            await handleListProducts();
             closeModal();
           }}
         />
@@ -101,12 +156,16 @@ const ProductsScreen = (): JSX.Element => {
         <Button
           id="button-add-product-id"
           label="+ Novo Produto"
-          onClick={() => setShowModal({ product: true, category: false })}
+          onClick={() =>
+            setShowModal({ ...defaultModalStatus, createProduct: true })
+          }
         />
         <Button
           id="button-add-category-id"
           label="+ Nova Categoria"
-          onClick={() => setShowModal({ product: false, category: true })}
+          onClick={() =>
+            setShowModal({ ...defaultModalStatus, createCategory: true })
+          }
         />
       </S.WrapperButtons>
       <Table
