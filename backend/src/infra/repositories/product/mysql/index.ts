@@ -89,7 +89,7 @@ export class ProductRepositoryMySQL implements ProductRepository {
       filters = this.buildFilters(input.filters);
     }
 
-    const query = `
+    const queryList = `
       SELECT pd.id, pd.name, pd.quantity, pd.category_id, ct.name as category_name 
       FROM ${TABLE_NAME} as pd 
       JOIN categories as ct ON ct.id = pd.category_id
@@ -98,10 +98,24 @@ export class ProductRepositoryMySQL implements ProductRepository {
     `;
 
     const products = (await this.mysql.query(
-      query
+      queryList
     )) as Array<ProductMySqlModel>;
 
-    return products.map((product) => this.dtoOutput(product));
+    const queryCount = `
+      SELECT COUNT(pd.id) as total
+      FROM ${TABLE_NAME} as pd 
+      JOIN categories as ct ON ct.id = pd.category_id
+      ${filters}
+    `;
+
+    const count = (await this.mysql.query(queryCount)) as Array<{
+      total: number;
+    }>;
+
+    return {
+      data: products.map((product) => this.dtoOutput(product)),
+      total: count[0].total,
+    };
   }
 
   private buildPagination(

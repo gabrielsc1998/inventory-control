@@ -58,7 +58,10 @@ describe("Product Memory Repository [ Infra ]", () => {
 
   it("should get all products [ without pagination and filters ]", async () => {
     const products = await sut.repository.findAll();
-    expect(products).toMatchObject(sut.repository.products);
+    expect(products).toMatchObject({
+      data: sut.repository.products,
+      total: sut.repository.products.length,
+    });
   });
 
   it("should get all products [ with filters | without pagination ]", async () => {
@@ -67,9 +70,14 @@ describe("Product Memory Repository [ Infra ]", () => {
         categoryId: "1",
       },
     });
-    expect(products).toMatchObject(
-      sut.repository.products.filter((product) => product.categoryId === "1")
-    );
+    expect(products).toMatchObject({
+      data: sut.repository.products.filter(
+        (product) => product.categoryId === "1"
+      ),
+      total: sut.repository.products.filter(
+        (product) => product.categoryId === "1"
+      ).length,
+    });
   });
 
   it("should get all products [ without filters | with pagination ]", async () => {
@@ -80,10 +88,10 @@ describe("Product Memory Repository [ Infra ]", () => {
       },
     });
 
-    expect(products).toMatchObject([
-      sut.repository.products[8],
-      sut.repository.products[9],
-    ]);
+    expect(products).toMatchObject({
+      data: [sut.repository.products[8], sut.repository.products[9]],
+      total: sut.repository.products.length,
+    });
   });
 
   it("should get all products [ with pagination and filters ]", async () => {
@@ -97,6 +105,11 @@ describe("Product Memory Repository [ Infra ]", () => {
       },
     });
 
-    expect(products).toMatchObject([]);
+    expect(products).toMatchObject({
+      data: [],
+      total: sut.repository.products.filter(
+        (product) => product.categoryId === "1"
+      ).length,
+    });
   });
 });

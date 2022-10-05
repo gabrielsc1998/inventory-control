@@ -15,10 +15,16 @@ export class ListProductsController implements Controller {
       dtoRequest as ListProducts.Input
     );
 
-    if (output.length === 0) {
+    if (output.data.length === 0) {
       return response.noContent();
     }
 
-    return response.ok(output);
+    return response.ok({
+      data: output.data,
+      total: output.total,
+      meta: {
+        page: dtoRequest?.pagination?.page || 1,
+      },
+    });
   }
 }

@@ -77,19 +77,20 @@ describe("List Products [ Controller ]", () => {
   beforeEach(() => jest.clearAllMocks());
 
   it("should list all products successfully", async () => {
+    const mockRet = { data: mocks.products, total: mocks.products.length };
     jest
       .spyOn(sut.listProductsUseCase, "execute")
-      .mockImplementation(() => Promise.resolve(mocks.products));
+      .mockImplementation(() => Promise.resolve(mockRet));
 
     const output = await sut.listProductsController.handle({});
 
-    expect(output).toMatchObject(ok(mocks.products));
+    expect(output).toMatchObject(ok({ ...mockRet, meta: { page: 1 } }));
   });
 
   it("should receive an empty array when not exists products", async () => {
     jest
       .spyOn(sut.listProductsUseCase, "execute")
-      .mockImplementation(() => Promise.resolve([]));
+      .mockImplementation(() => Promise.resolve({ data: [], total: 0 }));
 
     const output = await sut.listProductsController.handle({});
 
@@ -97,7 +98,7 @@ describe("List Products [ Controller ]", () => {
   });
 
   it("should list two products successfully [ with pagination ]", async () => {
-    const mockRet = [mocks.products[0], mocks.products[1]];
+    const mockRet = { data: [mocks.products[0], mocks.products[1]], total: 10 };
 
     const spyUseCase = jest
       .spyOn(sut.listProductsUseCase, "execute")
@@ -113,12 +114,12 @@ describe("List Products [ Controller ]", () => {
     };
     const output = await sut.listProductsController.handle(input);
 
-    expect(output).toMatchObject(ok(mockRet));
+    expect(output).toMatchObject(ok({ ...mockRet, meta: { page: 1 } }));
     expect(spyUseCase).toBeCalledWith(input.query);
   });
 
   it("should list one product successfully [ with filters ]", async () => {
-    const mockRet = [mocks.products[0]];
+    const mockRet = { data: [mocks.products[0]], total: 10 };
 
     const spyUseCase = jest
       .spyOn(sut.listProductsUseCase, "execute")
@@ -134,12 +135,12 @@ describe("List Products [ Controller ]", () => {
 
     const output = await sut.listProductsController.handle(input);
 
-    expect(output).toMatchObject(ok(mockRet));
+    expect(output).toMatchObject(ok({ ...mockRet, meta: { page: 1 } }));
     expect(spyUseCase).toBeCalledWith(input.query);
   });
 
   it("should list one product successfully [ with filters and pagination ]", async () => {
-    const mockRet = [mocks.products[0]];
+    const mockRet = { data: [mocks.products[0]], total: 2 };
 
     const spyUseCase = jest
       .spyOn(sut.listProductsUseCase, "execute")
@@ -159,7 +160,7 @@ describe("List Products [ Controller ]", () => {
 
     const output = await sut.listProductsController.handle(input);
 
-    expect(output).toMatchObject(ok(mockRet));
+    expect(output).toMatchObject(ok({ ...mockRet, meta: { page: 1 } }));
     expect(spyUseCase).toBeCalledWith(input.query);
   });
 });

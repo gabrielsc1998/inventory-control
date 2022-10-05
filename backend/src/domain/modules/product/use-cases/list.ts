@@ -12,11 +12,14 @@ export namespace ListProducts {
     pagination?: Pagination.Input;
   };
 
-  export type Output = Array<{
-    id: string;
-    name: string;
-    quantity: number;
-    categoryId: string;
-    categoryName: string;
-  }>;
+  export type Output = {
+    data: Array<{
+      id: string;
+      name: string;
+      quantity: number;
+      categoryId: string;
+      categoryName: string;
+    }>;
+    total: number;
+  };
 }

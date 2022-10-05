@@ -46,12 +46,13 @@ describe("List Products [ Use Case ]", () => {
 
     const output = await sut.listProducts.execute();
 
-    expect(output).toMatchObject(
-      mocks.products.map((product, index) => ({
+    expect(output).toMatchObject({
+      data: mocks.products.map((product, index) => ({
         ...product,
         categoryName: `cat-name-${index}`,
-      }))
-    );
+      })),
+      total: mocks.products.length,
+    });
     expect(spyRepoFindAll).toBeCalledWith();
   });
 
@@ -65,9 +66,10 @@ describe("List Products [ Use Case ]", () => {
     };
     const output = await sut.listProducts.execute(input);
 
-    expect(output).toMatchObject([
-      { ...mocks.products[0], categoryName: `cat-name-${0}` },
-    ]);
+    expect(output).toMatchObject({
+      data: [{ ...mocks.products[0], categoryName: `cat-name-${0}` }],
+      total: 1,
+    });
 
     expect(spyRepoFindAll).toBeCalledWith({ ...input, pagination: null });
   });
@@ -83,10 +85,13 @@ describe("List Products [ Use Case ]", () => {
     };
     const output = await sut.listProducts.execute(input);
 
-    expect(output).toMatchObject([
-      { ...mocks.products[0], categoryName: `cat-name-${0}` },
-      { ...mocks.products[1], categoryName: `cat-name-${1}` },
-    ]);
+    expect(output).toMatchObject({
+      data: [
+        { ...mocks.products[0], categoryName: `cat-name-${0}` },
+        { ...mocks.products[1], categoryName: `cat-name-${1}` },
+      ],
+      total: mocks.products.length,
+    });
 
     expect(spyRepoFindAll).toBeCalledWith({
       pagination: PaginationGateway.create(input.pagination),
@@ -108,9 +113,10 @@ describe("List Products [ Use Case ]", () => {
     };
     const output = await sut.listProducts.execute(input);
 
-    expect(output).toMatchObject([
-      { ...mocks.products[0], categoryName: `cat-name-${0}` },
-    ]);
+    expect(output).toMatchObject({
+      data: [{ ...mocks.products[0], categoryName: `cat-name-${0}` }],
+      total: 1,
+    });
 
     expect(spyRepoFindAll).toBeCalledWith({
       pagination: PaginationGateway.create(input.pagination),
@@ -128,7 +134,7 @@ describe("List Products [ Use Case ]", () => {
       },
     };
     const output = await sut.listProducts.execute(input);
-    expect(output).toMatchObject([]);
+    expect(output).toMatchObject({ data: [], total: mocks.products.length });
 
     expect(spyRepoFindAll).toBeCalledWith({
       pagination: PaginationGateway.create(input.pagination),
@@ -145,7 +151,7 @@ describe("List Products [ Use Case ]", () => {
       },
     };
     const output = await sut.listProducts.execute(input);
-    expect(output).toMatchObject([]);
+    expect(output).toMatchObject({ data: [], total: 0 });
 
     expect(spyRepoFindAll).toBeCalledWith({ ...input, pagination: null });
   });
@@ -155,7 +161,7 @@ describe("List Products [ Use Case ]", () => {
 
     sut.repository.products = [];
     const output = await sut.listProducts.execute();
-    expect(output).toMatchObject([]);
+    expect(output).toMatchObject({ data: [], total: 0 });
 
     expect(spyRepoFindAll).toBeCalledWith();
   });

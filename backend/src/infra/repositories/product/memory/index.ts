@@ -48,7 +48,7 @@ export class ProductRepositoryInMemory implements ProductRepository {
       });
 
       if (filteredData.length === 0) {
-        return Promise.resolve([]);
+        return Promise.resolve({ data: [], total: 0 });
       }
     }
 
@@ -62,19 +62,21 @@ export class ProductRepositoryInMemory implements ProductRepository {
       for (let i = start; i < end; i++) {
         i >= usedArray.length ? (i = end) : paginatedData.push(usedArray[i]);
       }
-      return Promise.resolve(
-        paginatedData.map((product, index) => ({
+      return Promise.resolve({
+        data: paginatedData.map((product, index) => ({
           ...product,
           categoryName: `cat-name-${index}`,
-        }))
-      );
+        })),
+        total: hasFilters ? filteredData.length : this.products.length,
+      });
     } else {
-      return Promise.resolve(
-        usedArray.map((product, index) => ({
+      return Promise.resolve({
+        data: usedArray.map((product, index) => ({
           ...product,
           categoryName: `cat-name-${index}`,
-        }))
-      );
+        })),
+        total: hasFilters ? filteredData.length : this.products.length,
+      });
     }
   }
 }

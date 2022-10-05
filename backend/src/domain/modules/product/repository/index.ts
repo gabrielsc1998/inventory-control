@@ -36,5 +36,8 @@ export namespace ProductRepository {
     filters?: FindAllFilters;
     pagination?: Pagination.Output;
   };
-  export type FindAllOutput = Array<ProductModel & { categoryName: string }>;
+  export type FindAllOutput = {
+    data: Array<ProductModel & { categoryName: string }>;
+    total: number;
+  };
 }
