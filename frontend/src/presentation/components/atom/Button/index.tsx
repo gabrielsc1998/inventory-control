@@ -1,7 +1,7 @@
 interface ButtonProps extends ButtonUiLibProps {
   id: string;
   label: string;
-  loading?: boolean;
+  isLoading?: boolean;
   onClick?: () => void;
 }
 
@@ -13,7 +13,7 @@ const Button = (props: ButtonProps): JSX.Element => {
   return (
     <S.Button
       size={"lg"}
-      isLoading={props.loading}
+      isLoading={props.isLoading}
       onClick={props.onClick}
       {...props}
     >
