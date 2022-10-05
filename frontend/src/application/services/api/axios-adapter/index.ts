@@ -1,11 +1,12 @@
 import axios, { AxiosInstance } from "axios";
+import createAuthRefreshInterceptor from "axios-auth-refresh";
 
 import { LocalStorage } from "domain/contracts/gateways";
 import { ServiceAPI } from "application/contracts/services/api";
 
 import { AXIOS_CONFIG } from "./config";
 import { tokenMiddleware } from "./middlewares/auth";
-import { responseErrorMiddleware } from "./middlewares/response";
+import { refreshTokenMiddleware } from "./middlewares/refresh-token";
 
 export class ServiceAPIAxiosAdapter implements ServiceAPI {
   client: AxiosInstance;
@@ -36,6 +37,9 @@ export class ServiceAPIAxiosAdapter implements ServiceAPI {
 
   private configInterceptors(): void {
     this.client.interceptors.request.use(tokenMiddleware(this.localStorage));
-    this.client.interceptors.response.use(null, responseErrorMiddleware());
+    createAuthRefreshInterceptor(
+      this.client,
+      refreshTokenMiddleware(this.client, this.localStorage)
+    );
   }
 }

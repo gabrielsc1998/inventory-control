@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 
 import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
 
-import { useReload } from "presentation/hooks/reload";
 import Button from "presentation/components/atom/Button";
 import { ProductModel } from "domain/modules/product/model";
 import { Option } from "presentation/components/atom/Select";
@@ -18,8 +17,6 @@ import ModalCreateCategory from "./components/Modal-Create-Category";
 import ModalRemoveProducts from "./components/Modal-Remove-Products";
 
 const ProductsScreen = (): JSX.Element => {
-  const reload = useReload();
-
   const listProductsUseCase = makeListProductsUseCase();
   const listCategoriesUseCase = makeListCategoriesUseCase();
 
@@ -91,10 +88,6 @@ const ProductsScreen = (): JSX.Element => {
         const listOfProducts = output.data;
         setProducts(listOfProducts);
       }
-    } else {
-      if (output.error) {
-        reload.verify(output.error.message);
-      }
     }
   };
 
@@ -111,10 +104,6 @@ const ProductsScreen = (): JSX.Element => {
             value: id,
           }))
         );
-      }
-    } else {
-      if (output.error) {
-        reload.verify(output.error.message);
       }
     }
   };
