@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import { Menu, MenuList, MenuItem, MenuButton } from "@chakra-ui/react";
 
+import { makeLocalStorageGateway } from "main/infra/gateways/local-storage";
+
 import * as S from "./styles";
 import { MenuItems } from "./Items";
 
@@ -18,15 +20,18 @@ const TopMenu = (): JSX.Element => {
         variant="outline"
       />
       <MenuList>
-        {MenuItems.map(({ label, icon, routeToRedirect }, index) => (
+        {MenuItems.map(({ label, icon, action, routeToRedirect }, index) => (
           <MenuItem
             key={`${label.toLowerCase()}-key-${index}`}
-            onClick={() => {
+            icon={icon}
+            onClick={async () => {
+              if (action) {
+                await action();
+              }
               if (routeToRedirect) {
                 return router.replace(routeToRedirect);
               }
             }}
-            icon={icon}
           >
             {label}
           </MenuItem>
