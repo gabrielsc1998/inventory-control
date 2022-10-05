@@ -89,13 +89,19 @@ export class ProductRepositoryMySQL implements ProductRepository {
       filters = this.buildFilters(input.filters);
     }
 
-    const queryList = `
+    let queryList = `
       SELECT pd.id, pd.name, pd.quantity, pd.category_id, ct.name as category_name 
       FROM ${TABLE_NAME} as pd 
       JOIN categories as ct ON ct.id = pd.category_id
-      ${filters}
-      ${pagination} 
     `;
+
+    if (hasPagination) {
+      queryList = `${queryList} ${pagination}`;
+    }
+
+    if (hasFilters) {
+      queryList = `${queryList} ${filters}`;
+    }
 
     const products = (await this.mysql.query(
       queryList

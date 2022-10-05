@@ -6,6 +6,9 @@ export class PaginationGateway implements Pagination {
   static create(input: Pagination.Input = {}): Pagination.Output {
     let { page = 1, size = 0 } = input;
 
+    page = Number(page);
+    size = Number(size);
+
     if (page < 1) {
       page = 1;
     }

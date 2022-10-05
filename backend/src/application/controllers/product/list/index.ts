@@ -3,17 +3,23 @@ import { HttpResponse } from "@/application/contracts/http";
 import { Controller } from "@/application/contracts/controllers";
 import { ListProducts } from "@/domain/modules/product/use-cases";
 
+type ListProductsQuery = { page?: number; size?: number };
+
 export class ListProductsController implements Controller {
   constructor(private readonly listProductsUseCase: ListProducts) {}
 
-  async handle(request: { query: ListProducts.Input }): Promise<HttpResponse> {
-    const dtoRequest = {
+  async handle(request: { query: ListProductsQuery }): Promise<HttpResponse> {
+    const dtoRequest: ListProductsQuery = {
       ...(request?.query || {}),
     };
 
-    const output = await this.listProductsUseCase.execute(
-      dtoRequest as ListProducts.Input
-    );
+    const dtoListProducts: ListProducts.Input = {
+      pagination: {
+        page: Number(dtoRequest.page || 1),
+        size: dtoRequest?.size ? Number(dtoRequest?.size) : undefined,
+      },
+    };
+    const output = await this.listProductsUseCase.execute(dtoListProducts);
 
     if (output.data.length === 0) {
       return response.noContent();
@@ -23,7 +29,7 @@ export class ListProductsController implements Controller {
       data: output.data,
       total: output.total,
       meta: {
-        page: dtoRequest?.pagination?.page || 1,
+        page: dtoListProducts.pagination?.page || 1,
       },
     });
   }
