@@ -5,6 +5,7 @@ import { ServiceAPI } from "application/contracts/services/api";
 
 import { AXIOS_CONFIG } from "./config";
 import { tokenMiddleware } from "./middlewares/auth";
+import { responseErrorMiddleware } from "./middlewares/response";
 
 export class ServiceAPIAxiosAdapter implements ServiceAPI {
   client: AxiosInstance;
@@ -35,5 +36,6 @@ export class ServiceAPIAxiosAdapter implements ServiceAPI {
 
   private configInterceptors(): void {
     this.client.interceptors.request.use(tokenMiddleware(this.localStorage));
+    this.client.interceptors.response.use(null, responseErrorMiddleware());
   }
 }
