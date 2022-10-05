@@ -21,7 +21,9 @@ export class ListProductsUseCase implements ListProducts {
         size: DEFAULT_PAGE_SIZE,
       };
 
-      const endpointFilters = `?page=${pagination.page}&size=${pagination.size}`;
+      const endpointFilters = `?page=${pagination.page}&size=${
+        pagination.size || DEFAULT_PAGE_SIZE
+      }`;
 
       const output = await this.serviceAPI.send<undefined, APIReturn>({
         method: "get",
