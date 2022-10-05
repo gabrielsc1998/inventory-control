@@ -30,22 +30,25 @@ describe("List Products [ Use Case ]", () => {
   it("should get the products successfully", async () => {
     const mockOutput = {
       status: 200,
-      data: [
-        {
-          id: "1",
-          name: "prod-1",
-          quantity: 10,
-          categoryId: "1",
-          categoryName: "cat-1",
-        },
-        {
-          id: "2",
-          name: "prod-2",
-          quantity: 10,
-          categoryId: "1",
-          categoryName: "cat-1",
-        },
-      ],
+      data: {
+        data: [
+          {
+            id: "1",
+            name: "prod-1",
+            quantity: 10,
+            categoryId: "1",
+            categoryName: "cat-1",
+          },
+          {
+            id: "2",
+            name: "prod-2",
+            quantity: 10,
+            categoryId: "1",
+            categoryName: "cat-1",
+          },
+        ],
+        total: 2,
+      },
     };
 
     const spyServiceAPI = jest

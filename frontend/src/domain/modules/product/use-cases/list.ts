@@ -20,7 +20,7 @@ export namespace ListProducts {
 
   export type Output = {
     status: STATUS_TYPES;
-    data?: Array<ProductModel>;
+    data?: { data: Array<ProductModel>; total: number };
     error?: Error;
   };
 }
