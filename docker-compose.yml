@@ -34,5 +34,19 @@ services:
       - $SERVER_PORT:$SERVER_PORT
     entrypoint: ["bash", "backend-start.sh"]
 
+  frontend:
+    image: node:latest
+    env_file: .env
+    container_name: frontend
+    restart: always
+    working_dir: /usr/src/frontend
+    volumes:
+      - ./frontend:/usr/src/frontend
+    depends_on:
+      - backend
+    ports:
+      - 4000:$PORT
+    entrypoint: ["bash", "frontend-start.sh"]
+
 volumes:
   db:
