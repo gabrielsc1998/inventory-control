@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 import { TableContainer, Table as TableUiLib } from "@chakra-ui/react";
 
 import TableBody from "./Body";
@@ -7,6 +9,7 @@ import Paginator from "./Paginator";
 export type TableColumn = {
   header: string;
   key: string;
+  formatter?: (value: unknown) => ReactNode;
 };
 
 export type TableData = { [key: string]: any };

@@ -17,12 +17,12 @@ const TableBody = (props: TableBodyProps) => {
     <Tbody>
       {data.map((data, index) => (
         <Tr key={`tr-data-key-${index}`}>
-          {columns.map(({ key }, idxCol) => (
+          {columns.map(({ key, formatter }, idxCol) => (
             <Td
               style={{ textAlign: "center" }}
               key={`data-${key}-key-${idxCol}`}
             >
-              {data[key] as ReactNode}
+              {formatter ? formatter(data[key]) : (data[key] as ReactNode)}
             </Td>
           ))}
         </Tr>

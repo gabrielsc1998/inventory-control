@@ -48,10 +48,7 @@ export const Button = styled(IconButton)`
       }
 
       &:disabled {
-        &:hover {
-          opacity: 0.5;
-          background-color: ${theme.colors.ui.secondary};
-        }
+        pointer-events: none;
       }
     }
   `}
