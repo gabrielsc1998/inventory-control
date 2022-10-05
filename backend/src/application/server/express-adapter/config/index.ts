@@ -1,3 +1,5 @@
+import cors from "cors";
+
 import express, { json, urlencoded } from "express";
 
 export const setDefaultMiddlewares = (app: express.Express) => {
@@ -9,16 +11,5 @@ export const setDefaultMiddlewares = (app: express.Express) => {
     })
   );
 
-  app.use(
-    (
-      req: express.Request,
-      res: express.Response,
-      next: express.NextFunction
-    ) => {
-      res.set("access-control-allow-origin", "*");
-      res.set("access-control-allow-headers", "*");
-      res.set("access-control-allow-methods", "*");
-      next();
-    }
-  );
+  app.use(cors());
 };
