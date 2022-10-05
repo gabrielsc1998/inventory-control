@@ -13,4 +13,9 @@ export const ROUTES = {
 
   CREATE_PRODUCT: "/products",
   GET_PRODUCTS: "/products",
+
+  /* --- INVENTORY --- */
+
+  ADD_PRODUCTS: "/inventory/add",
+  SUB_PRODUCTS: "/inventory/sub",
 };
