@@ -5,14 +5,20 @@ import { LocalStorage } from "domain/contracts/gateways";
 import { ServiceAPI } from "application/contracts/services/api";
 
 import { AXIOS_CONFIG } from "./config";
+import { makeCacheAdapter } from "./cache";
 import { tokenMiddleware } from "./middlewares/auth";
 import { refreshTokenMiddleware } from "./middlewares/refresh-token";
+
+const axiosInstance = axios.create({
+  ...AXIOS_CONFIG,
+  adapter: makeCacheAdapter(),
+});
 
 export class ServiceAPIAxiosAdapter implements ServiceAPI {
   client: AxiosInstance;
 
   constructor(private readonly localStorage: LocalStorage) {
-    this.client = axios.create(AXIOS_CONFIG);
+    this.client = axiosInstance;
     this.configInterceptors();
   }
 
@@ -29,6 +35,7 @@ export class ServiceAPIAxiosAdapter implements ServiceAPI {
       if (hasError) {
         throw output;
       }
+
       return output;
     } catch (error) {
       return error;

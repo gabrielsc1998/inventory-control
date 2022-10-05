@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosInstance } from "axios";
+import { AxiosError, AxiosInstance } from "axios";
 
 import { LOCAL_STORAGE } from "common/keys";
 import { LocalStorage } from "domain/contracts/gateways";

@@ -29,6 +29,15 @@ const localStorageMock = {
 global.localStorage = localStorageMock as any;
 
 let callUse = false;
+
+jest.mock("axios-auth-refresh", () => jest.fn);
+
+jest.mock("axios-cache-adapter", () => ({
+  setupCache: () => ({
+    adapter: () => {},
+  }),
+}));
+
 jest.mock("axios", () => ({
   create: () => ({
     interceptors: {
