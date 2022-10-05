@@ -55,6 +55,7 @@ describe("List Categories [ Use Case ]", () => {
       method: "get",
       endpoint: ROUTES.GET_CATEGORIES,
       body: undefined,
+      noCache: undefined,
     });
   });
 
@@ -70,6 +71,7 @@ describe("List Categories [ Use Case ]", () => {
       method: "get",
       endpoint: ROUTES.GET_CATEGORIES,
       body: undefined,
+      noCache: undefined,
     });
   });
 
@@ -85,6 +87,7 @@ describe("List Categories [ Use Case ]", () => {
       method: "get",
       endpoint: ROUTES.GET_CATEGORIES,
       body: undefined,
+      noCache: undefined,
     });
   });
 });

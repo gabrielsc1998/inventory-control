@@ -35,6 +35,9 @@ jest.mock("axios-auth-refresh", () => jest.fn);
 jest.mock("axios-cache-adapter", () => ({
   setupCache: () => ({
     adapter: () => {},
+    config: {
+      ignoreCache: false,
+    },
   }),
 }));
 

@@ -9,9 +9,10 @@ import { makeCacheAdapter } from "./cache";
 import { tokenMiddleware } from "./middlewares/auth";
 import { refreshTokenMiddleware } from "./middlewares/refresh-token";
 
+const adapter = makeCacheAdapter();
 const axiosInstance = axios.create({
   ...AXIOS_CONFIG,
-  adapter: makeCacheAdapter(),
+  adapter: adapter.adapter,
 });
 
 export class ServiceAPIAxiosAdapter implements ServiceAPI {
@@ -26,10 +27,18 @@ export class ServiceAPIAxiosAdapter implements ServiceAPI {
     input: ServiceAPI.Input<TInput>
   ): Promise<ServiceAPI.Output<TOutputData>> {
     try {
+      if (input.noCache) {
+        adapter.config.ignoreCache = true;
+      }
+
       const output = (await this.client[input.method](
         input.endpoint,
         input.body
       )) as ServiceAPI.Output<TOutputData>;
+
+      if (input.noCache) {
+        adapter.config.ignoreCache = false;
+      }
 
       const hasError = output instanceof Error;
       if (hasError) {
@@ -38,6 +47,7 @@ export class ServiceAPIAxiosAdapter implements ServiceAPI {
 
       return output;
     } catch (error) {
+      adapter.config.ignoreCache = false;
       return error;
     }
   }

@@ -7,7 +7,7 @@ import { ListCategories } from "domain/modules/category/use-cases";
 export class ListCategoriesUseCase implements ListCategories {
   constructor(private readonly serviceAPI: ServiceAPI) {}
 
-  async execute(): Promise<ListCategories.Output> {
+  async execute(input?: ListCategories.Input): Promise<ListCategories.Output> {
     try {
       const output = await this.serviceAPI.send<
         undefined,
@@ -15,6 +15,7 @@ export class ListCategoriesUseCase implements ListCategories {
       >({
         method: "get",
         endpoint: ROUTES.GET_CATEGORIES,
+        noCache: input?.noCache,
       });
 
       const hasError = output instanceof Error;

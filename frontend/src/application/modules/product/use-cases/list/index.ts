@@ -28,6 +28,7 @@ export class ListProductsUseCase implements ListProducts {
       const output = await this.serviceAPI.send<undefined, APIReturn>({
         method: "get",
         endpoint: `${ROUTES.GET_PRODUCTS}${endpointFilters}`,
+        noCache: input?.noCache,
       });
 
       const hasError = output instanceof Error;

@@ -1,14 +1,17 @@
 import { AxiosAdapter } from "axios";
-import { setupCache } from "axios-cache-adapter";
+import { IAxiosCacheAdapterOptions, setupCache } from "axios-cache-adapter";
 
-export const makeCacheAdapter = (): AxiosAdapter => {
+export const makeCacheAdapter = (): {
+  adapter: AxiosAdapter;
+  config: IAxiosCacheAdapterOptions;
+} => {
   const cacheAdapter = setupCache({
     maxAge: 15000,
     exclude: {
       query: false,
-      methods: ["put", "patch", "delete"],
+      methods: ["put", "patch", "delete", "post"],
     },
-    debug: true,
   });
-  return cacheAdapter.adapter;
+
+  return { adapter: cacheAdapter.adapter, config: cacheAdapter.config };
 };

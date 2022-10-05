@@ -75,11 +75,15 @@ const ProductsScreen = (): JSX.Element => {
     },
   ];
 
-  const handleListProducts = async (page: number): Promise<void> => {
+  const handleListProducts = async (
+    page: number,
+    noCache?: boolean
+  ): Promise<void> => {
     const output = await listProductsUseCase.execute({
       pagination: {
         page: page,
       },
+      noCache,
     });
     const hasError = output instanceof Error || output.error;
 
@@ -91,8 +95,10 @@ const ProductsScreen = (): JSX.Element => {
     }
   };
 
-  const handleListCategories = async (): Promise<void> => {
-    const output = await listCategoriesUseCase.execute();
+  const handleListCategories = async (noCache?: boolean): Promise<void> => {
+    const output = await listCategoriesUseCase.execute({
+      noCache,
+    });
     const hasError = output instanceof Error || output.error;
 
     if (!hasError) {
@@ -123,7 +129,7 @@ const ProductsScreen = (): JSX.Element => {
           open={showModal.createProduct}
           onClose={() => closeModal()}
           onNewProductCreated={async () => {
-            await handleListProducts(currentPage);
+            await handleListProducts(currentPage, true);
             closeModal();
           }}
         />
@@ -131,7 +137,7 @@ const ProductsScreen = (): JSX.Element => {
           open={showModal.createCategory}
           onClose={() => closeModal()}
           onNewCategoryCreated={async () => {
-            await handleListCategories();
+            await handleListCategories(true);
             closeModal();
           }}
         />
@@ -140,7 +146,7 @@ const ProductsScreen = (): JSX.Element => {
           open={showModal.addProducts}
           onClose={() => closeModal()}
           onNewProductsAdded={async () => {
-            await handleListProducts(currentPage);
+            await handleListProducts(currentPage, true);
             closeModal();
           }}
         />
@@ -149,7 +155,7 @@ const ProductsScreen = (): JSX.Element => {
           open={showModal.removeProducts}
           onClose={() => closeModal()}
           onProductsRemoved={async () => {
-            await handleListProducts(currentPage);
+            await handleListProducts(currentPage, true);
             closeModal();
           }}
         />

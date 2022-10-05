@@ -9,6 +9,7 @@ export namespace ServiceAPI {
     method: "get" | "post" | "put" | "delete";
     endpoint: string;
     body?: TBody;
+    noCache?: boolean;
   };
 
   export type Output<TData = any> =

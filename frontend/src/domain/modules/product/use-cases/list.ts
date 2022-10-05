@@ -16,6 +16,7 @@ export namespace ListProducts {
       page?: number;
       size?: number;
     };
+    noCache?: boolean;
   };
 
   export type Output = {

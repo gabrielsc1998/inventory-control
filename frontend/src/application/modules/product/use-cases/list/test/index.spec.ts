@@ -62,8 +62,9 @@ describe("List Products [ Use Case ]", () => {
     expect(output).toMatchObject(success(mockOutput.data));
     expect(spyServiceAPI).toBeCalledWith({
       method: "get",
-      endpoint: ROUTES.GET_PRODUCTS,
+      endpoint: `${ROUTES.GET_PRODUCTS}?page=1&size=10`,
       body: undefined,
+      noCache: undefined,
     });
   });
 
@@ -77,8 +78,9 @@ describe("List Products [ Use Case ]", () => {
     expect(output).toMatchObject(error(new Error("some error")));
     expect(spyServiceAPI).toBeCalledWith({
       method: "get",
-      endpoint: ROUTES.GET_PRODUCTS,
+      endpoint: `${ROUTES.GET_PRODUCTS}?page=1&size=10`,
       body: undefined,
+      noCache: undefined,
     });
   });
 
@@ -92,8 +94,9 @@ describe("List Products [ Use Case ]", () => {
     expect(output).toMatchObject(error(new Error("some error")));
     expect(spyServiceAPI).toBeCalledWith({
       method: "get",
-      endpoint: ROUTES.GET_PRODUCTS,
+      endpoint: `${ROUTES.GET_PRODUCTS}?page=1&size=10`,
       body: undefined,
+      noCache: undefined,
     });
   });
 });
