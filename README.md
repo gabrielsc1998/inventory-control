@@ -1,7 +1,5 @@
 ## Inventory Control - Frontend and Backend (Database)
 
----
-
 #### To run
 
 - you need to have docker-compose installed;

@@ -1,7 +1,5 @@
 ## Inventory Control - Backend
 
----
-
 #### To run individually (without docker):
 
 - you need to have Nodejs installed;
