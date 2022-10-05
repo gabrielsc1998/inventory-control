@@ -15,15 +15,21 @@ const Select = (props: SelectProps): JSX.Element => {
   return (
     <ReactSelect
       styles={{
-        container: () => ({
+        container: (base) => ({
+          ...base,
           width: "100%",
+          fontSize: "15px",
+        }),
+        control: (base) => ({
+          ...base,
+          height: "30px",
         }),
       }}
       menuPlacement="auto"
       menuPosition="fixed"
       options={props.options}
       placeholder={props.placeholder}
-      onChange={(value) => props?.onChange(value)}
+      onChange={(value) => props?.onChange && props.onChange(value)}
     />
   );
 };
