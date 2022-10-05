@@ -1,5 +1,10 @@
 import { useState } from "react";
 
+import { useRouter } from "next/router";
+
+import { STATUS } from "common/constants";
+import { useToast } from "presentation/hooks";
+import { SCREEN_ROUTES } from "presentation/routes";
 import Input from "presentation/components/atom/Input";
 import Button from "presentation/components/atom/Button";
 import Logo from "presentation/components/molecules/Logo";
@@ -9,7 +14,14 @@ import InputPassword from "presentation/components/molecules/Input-Password";
 import * as S from "./styles";
 
 const LoginScreen = (): JSX.Element => {
+  const toast = useToast();
+  const router = useRouter();
+
   const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState<{ email: string; password: string }>({
+    email: "",
+    password: "",
+  });
 
   const handleLogin = async (): Promise<void> => {
     setLoading(true);
@@ -17,15 +29,33 @@ const LoginScreen = (): JSX.Element => {
     const loginUseCase = makeLoginUseCase();
 
     const output = await loginUseCase.execute({
-      email: "admin@user.com",
-      password: "123456",
+      email: form.email,
+      password: form.password,
     });
 
     const hasError = output instanceof Error;
 
-    setTimeout(() => {
-      setLoading(false);
-    }, 250);
+    if (!hasError) {
+      if (output.status === STATUS.SUCCESS) {
+        toast.show({
+          type: "success",
+          title: "Bem vindo(a)",
+        });
+        setTimeout(() => router.replace(SCREEN_ROUTES.PRODUCTS), 250);
+      } else {
+        toast.show({
+          type: "error",
+          title: "Credenciais inválidas",
+        });
+        setTimeout(() => setLoading(false), 250);
+      }
+    } else {
+      toast.show({
+        type: "success",
+        title: "Erro ao fazer o login",
+      });
+      setTimeout(() => setLoading(false), 250);
+    }
   };
 
   return (
@@ -38,15 +68,18 @@ const LoginScreen = (): JSX.Element => {
             label="E-mail"
             variant="flushed"
             placeholder="Insira seu e-mail"
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
           />
           <InputPassword
             id="input-password-id"
             label="Senha"
             placeholder="Insira sua senha"
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
           />
         </S.WrapperFormFields>
         <Button
-          loading={loading}
+          disabled={form.email === "" || form.password === ""}
+          isLoading={loading}
           id="button-login-id"
           label="LOGIN"
           onClick={async () => {
