@@ -42,7 +42,7 @@ const Paginator = (props: PaginatorProps): JSX.Element => {
             ? "Sem dados"
             : `Mostrando ${getInitialValue()} a ${getEndValue()} de ${
                 props.total
-              }}`}
+              }`}
         </S.Label>
         <S.WrapperButttons>
           <S.Button
