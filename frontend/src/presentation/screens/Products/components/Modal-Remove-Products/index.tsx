@@ -29,6 +29,15 @@ const ModalRemoveProducts = (props: ModalRemoveProductsProps): JSX.Element => {
   const disableButton = form.quantity === "";
 
   const handleCreateProduct = async (): Promise<void> => {
+    const quantity = Number(form.quantity);
+    if (quantity < 0) {
+      toast.show({
+        type: "error",
+        title: "Valor inválido!",
+      });
+      return;
+    }
+
     const output = await removeProductsUseCase.execute({
       productId: form.productId,
       quantity: Number(form.quantity),
