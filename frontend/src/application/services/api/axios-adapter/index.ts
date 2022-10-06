@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import createAuthRefreshInterceptor from "axios-auth-refresh";
 
-import { LocalStorage } from "domain/contracts/gateways";
+import { DomainStorage } from "domain/contracts/gateways";
 import { ServiceAPI } from "application/contracts/services/api";
 
 import { AXIOS_CONFIG } from "./config";
@@ -18,7 +18,7 @@ const axiosInstance = axios.create({
 export class ServiceAPIAxiosAdapter implements ServiceAPI {
   client: AxiosInstance;
 
-  constructor(private readonly localStorage: LocalStorage) {
+  constructor(private readonly domainStorage: DomainStorage) {
     this.client = axiosInstance;
     this.configInterceptors();
   }
@@ -53,10 +53,10 @@ export class ServiceAPIAxiosAdapter implements ServiceAPI {
   }
 
   private configInterceptors(): void {
-    this.client.interceptors.request.use(tokenMiddleware(this.localStorage));
+    this.client.interceptors.request.use(tokenMiddleware(this.domainStorage));
     createAuthRefreshInterceptor(
       this.client,
-      refreshTokenMiddleware(this.client, this.localStorage)
+      refreshTokenMiddleware(this.client, this.domainStorage)
     );
   }
 }

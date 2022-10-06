@@ -1,9 +1,9 @@
-import { LocalStorage } from "domain/contracts/gateways";
+import { DomainStorage } from "domain/contracts/gateways";
 
 import { LocalStorageGateway } from "..";
 
 type SUT = {
-  localStorage: LocalStorage;
+  localStorage: DomainStorage;
 };
 
 const makeSut = (): SUT => {
@@ -21,6 +21,7 @@ const localStorageMock = {
   setItem: jest.fn(),
   removeItem: jest.fn(),
 };
+global.window = jest.fn() as any;
 global.localStorage = localStorageMock as any;
 
 describe("Auth [ Middleware ]", () => {

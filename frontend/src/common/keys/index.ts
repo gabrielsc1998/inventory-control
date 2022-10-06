@@ -1,4 +1,4 @@
-export const LOCAL_STORAGE = {
+export const STORAGE = {
   TOKEN: "token",
   REFRESH_TOKEN: "refreshToken",
 };

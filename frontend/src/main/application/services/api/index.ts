@@ -1,9 +1,9 @@
 import { ServiceAPI } from "application/contracts/services/api";
-import { makeLocalStorageGateway } from "main/infra/gateways/local-storage";
+import { makeDomainStorageGateway } from "main/infra/gateways/domain-storage";
 import { ServiceAPIAxiosAdapter } from "application/services/api/axios-adapter";
 
 export const makeServiceAPI = (): ServiceAPI => {
-  const localStorage = makeLocalStorageGateway();
-  const serviceAPI = new ServiceAPIAxiosAdapter(localStorage);
+  const domainStorage = makeDomainStorageGateway();
+  const serviceAPI = new ServiceAPIAxiosAdapter(domainStorage);
   return serviceAPI;
 };

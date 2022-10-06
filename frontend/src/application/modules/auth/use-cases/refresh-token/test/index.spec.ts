@@ -1,29 +1,29 @@
 import { ROUTES } from "common/routes";
-import { LOCAL_STORAGE } from "common/keys";
+import { STORAGE } from "common/keys";
 import { error, success } from "domain/helpers/status";
-import { LocalStorage } from "domain/contracts/gateways";
+import { DomainStorage } from "domain/contracts/gateways";
 import { RefreshToken } from "domain/modules/auth/use-cases";
 import { ServiceAPI } from "application/contracts/services/api";
 import { ServiceAPIMock } from "common/test/mocks/application/services/api";
-import { LocalStorageMock } from "common/test/mocks/infra/gateways/local-storage";
+import { DomainStorageMock } from "common/test/mocks/infra/gateways/domain-storage";
 
 import { RefreshTokenUseCase } from "..";
 
 type SUT = {
   loginUseCase: RefreshToken;
   serviceAPI: ServiceAPI;
-  localStorage: LocalStorage;
+  domainStorage: DomainStorage;
 };
 
 const makeSut = (): SUT => {
   const serviceAPI = new ServiceAPIMock();
-  const localStorage = new LocalStorageMock();
-  const loginUseCase = new RefreshTokenUseCase(serviceAPI, localStorage);
+  const domainStorage = new DomainStorageMock();
+  const loginUseCase = new RefreshTokenUseCase(serviceAPI, domainStorage);
 
   return {
     loginUseCase,
     serviceAPI,
-    localStorage,
+    domainStorage,
   };
 };
 
@@ -50,10 +50,10 @@ describe("RefreshToken [ Use Case ]", () => {
         return Promise.resolve(mockOutput);
       });
 
-    const spyLocalStorageGet = jest
-      .spyOn(sut.localStorage, "get")
+    const spyDomainStorageGet = jest
+      .spyOn(sut.domainStorage, "get")
       .mockReturnValue(mockRefreshToken);
-    const spyLocalStorageSet = jest.spyOn(sut.localStorage, "set");
+    const spyDomainStorageSet = jest.spyOn(sut.domainStorage, "set");
 
     const output = await sut.loginUseCase.execute();
 
@@ -63,15 +63,15 @@ describe("RefreshToken [ Use Case ]", () => {
       endpoint: ROUTES.REFRESH_TOKEN,
       body: { access_token: mockRefreshToken },
     });
-    expect(spyLocalStorageGet).toBeCalledWith({
-      key: LOCAL_STORAGE.REFRESH_TOKEN,
+    expect(spyDomainStorageGet).toBeCalledWith({
+      key: STORAGE.REFRESH_TOKEN,
     });
-    expect(spyLocalStorageSet).toBeCalledWith({
-      key: LOCAL_STORAGE.TOKEN,
+    expect(spyDomainStorageSet).toBeCalledWith({
+      key: STORAGE.TOKEN,
       value: mockOutput.data.token,
     });
-    expect(spyLocalStorageSet).toBeCalledWith({
-      key: LOCAL_STORAGE.REFRESH_TOKEN,
+    expect(spyDomainStorageSet).toBeCalledWith({
+      key: STORAGE.REFRESH_TOKEN,
       value: mockOutput.data.refreshToken,
     });
   });
@@ -81,15 +81,15 @@ describe("RefreshToken [ Use Case ]", () => {
       .spyOn(sut.serviceAPI, "send")
       .mockResolvedValue(new Error("some error"));
 
-    const spyLocalStorageGet = jest
-      .spyOn(sut.localStorage, "get")
+    const spyDomainStorageGet = jest
+      .spyOn(sut.domainStorage, "get")
       .mockReturnValue(mockRefreshToken);
 
     const output = await sut.loginUseCase.execute();
 
     expect(output).toMatchObject(error(new Error("some error")));
-    expect(spyLocalStorageGet).toBeCalledWith({
-      key: LOCAL_STORAGE.REFRESH_TOKEN,
+    expect(spyDomainStorageGet).toBeCalledWith({
+      key: STORAGE.REFRESH_TOKEN,
     });
     expect(spyServiceAPI).toBeCalledWith({
       method: "post",
@@ -103,15 +103,15 @@ describe("RefreshToken [ Use Case ]", () => {
       .spyOn(sut.serviceAPI, "send")
       .mockRejectedValue(new Error("some error"));
 
-    const spyLocalStorageGet = jest
-      .spyOn(sut.localStorage, "get")
+    const spyDomainStorageGet = jest
+      .spyOn(sut.domainStorage, "get")
       .mockReturnValue(mockRefreshToken);
 
     const output = await sut.loginUseCase.execute();
 
     expect(output).toMatchObject(error(new Error("some error")));
-    expect(spyLocalStorageGet).toBeCalledWith({
-      key: LOCAL_STORAGE.REFRESH_TOKEN,
+    expect(spyDomainStorageGet).toBeCalledWith({
+      key: STORAGE.REFRESH_TOKEN,
     });
     expect(spyServiceAPI).toBeCalledWith({
       method: "post",

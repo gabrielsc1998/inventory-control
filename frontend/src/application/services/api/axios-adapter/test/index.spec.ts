@@ -1,7 +1,7 @@
 import axios from "axios";
 
 import { ServiceAPI } from "application/contracts/services/api";
-import { LocalStorageMock } from "common/test/mocks/infra/gateways/local-storage";
+import { DomainStorageMock } from "common/test/mocks/infra/gateways/domain-storage";
 
 import { ServiceAPIAxiosAdapter } from "..";
 
@@ -10,8 +10,8 @@ type SUT = {
 };
 
 const makeSut = (): SUT => {
-  const localStorage = new LocalStorageMock();
-  const serviceAPI = new ServiceAPIAxiosAdapter(localStorage);
+  const domainStorage = new DomainStorageMock();
+  const serviceAPI = new ServiceAPIAxiosAdapter(domainStorage);
 
   return {
     serviceAPI,
@@ -20,15 +20,8 @@ const makeSut = (): SUT => {
 
 let sut: SUT = null;
 
-const localStorageMock = {
-  getItem: jest.fn(),
-  setItem: jest.fn(),
-  removeItem: jest.fn(),
-};
-
-global.localStorage = localStorageMock as any;
-
-let callUse = false;
+let callUseRequest = false;
+let callUseResponse = false;
 
 jest.mock("axios-auth-refresh", () => jest.fn);
 
@@ -46,7 +39,12 @@ jest.mock("axios", () => ({
     interceptors: {
       request: {
         use: () => {
-          callUse = true;
+          callUseRequest = true;
+        },
+      },
+      response: {
+        use: () => {
+          callUseResponse = true;
         },
       },
     },
@@ -61,15 +59,16 @@ let mockSutClient: any;
 
 describe("Axios adapter [ Service API ]", () => {
   beforeAll(() => {
-    callUse = false;
+    callUseRequest = false;
     sut = makeSut();
     mockSutClient = sut.serviceAPI as any;
   });
 
   beforeEach(() => jest.clearAllMocks());
 
-  it("should config the token interceptor", async () => {
-    expect(callUse).toBeTruthy();
+  it("should config the interceptors", async () => {
+    expect(callUseRequest).toBeTruthy();
+    expect(callUseResponse).toBeTruthy();
   });
 
   it("should get a data successfully", async () => {

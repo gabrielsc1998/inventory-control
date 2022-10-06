@@ -3,8 +3,6 @@ import { useRouter } from "next/router";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import { Menu, MenuList, MenuItem, MenuButton } from "@chakra-ui/react";
 
-import { makeLocalStorageGateway } from "main/infra/gateways/local-storage";
-
 import * as S from "./styles";
 import { MenuItems } from "./Items";
 

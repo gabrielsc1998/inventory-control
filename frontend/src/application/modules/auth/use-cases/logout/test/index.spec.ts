@@ -1,23 +1,22 @@
-import { LOCAL_STORAGE } from "common/keys";
-
+import { STORAGE } from "common/keys";
 import { Logout } from "domain/modules/auth/use-cases";
-import { LocalStorage } from "domain/contracts/gateways";
-import { LocalStorageMock } from "common/test/mocks/infra/gateways/local-storage";
+import { DomainStorage } from "domain/contracts/gateways";
+import { DomainStorageMock } from "common/test/mocks/infra/gateways/domain-storage";
 
 import { LogoutUseCase } from "..";
 
 type SUT = {
   logoutUseCase: Logout;
-  localStorage: LocalStorage;
+  domainStorage: DomainStorage;
 };
 
 const makeSut = (): SUT => {
-  const localStorage = new LocalStorageMock();
-  const logoutUseCase = new LogoutUseCase(localStorage);
+  const domainStorage = new DomainStorageMock();
+  const logoutUseCase = new LogoutUseCase(domainStorage);
 
   return {
     logoutUseCase,
-    localStorage,
+    domainStorage,
   };
 };
 
@@ -28,15 +27,15 @@ describe("Logout [ Use Case ]", () => {
   beforeEach(() => jest.clearAllMocks());
 
   it("should make the logout successfully", async () => {
-    const spyLocalStorageRemove = jest.spyOn(sut.localStorage, "remove");
+    const spyDomainStorageRemove = jest.spyOn(sut.domainStorage, "remove");
 
     const output = await sut.logoutUseCase.execute();
 
-    expect(spyLocalStorageRemove).toBeCalledWith({
-      key: LOCAL_STORAGE.TOKEN,
+    expect(spyDomainStorageRemove).toBeCalledWith({
+      key: STORAGE.TOKEN,
     });
-    expect(spyLocalStorageRemove).toBeCalledWith({
-      key: LOCAL_STORAGE.REFRESH_TOKEN,
+    expect(spyDomainStorageRemove).toBeCalledWith({
+      key: STORAGE.REFRESH_TOKEN,
     });
   });
 });

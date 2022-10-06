@@ -1,7 +1,7 @@
 import { ROUTES } from "common/routes";
-import { LOCAL_STORAGE } from "common/keys";
+import { STORAGE } from "common/keys";
 import { error, success } from "domain/helpers/status";
-import { LocalStorage } from "domain/contracts/gateways";
+import { DomainStorage } from "domain/contracts/gateways";
 import { RefreshToken } from "domain/modules/auth/use-cases";
 import { ServiceAPI } from "application/contracts/services/api";
 
@@ -17,13 +17,13 @@ type Output = {
 export class RefreshTokenUseCase implements RefreshToken {
   constructor(
     private readonly serviceAPI: ServiceAPI,
-    private readonly localStorage: LocalStorage
+    private readonly domainStorage: DomainStorage
   ) {}
 
   async execute(): Promise<RefreshToken.Output> {
     try {
-      const refreshToken = this.localStorage.get({
-        key: LOCAL_STORAGE.REFRESH_TOKEN,
+      const refreshToken = this.domainStorage.get({
+        key: STORAGE.REFRESH_TOKEN,
       });
 
       const output = await this.serviceAPI.send<Input, Output>({
@@ -39,9 +39,9 @@ export class RefreshTokenUseCase implements RefreshToken {
 
       const { status, data } = output;
       if (status === 200) {
-        this.localStorage.set({ key: LOCAL_STORAGE.TOKEN, value: data.token });
-        this.localStorage.set({
-          key: LOCAL_STORAGE.REFRESH_TOKEN,
+        this.domainStorage.set({ key: STORAGE.TOKEN, value: data.token });
+        this.domainStorage.set({
+          key: STORAGE.REFRESH_TOKEN,
           value: data.refreshToken,
         });
 

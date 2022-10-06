@@ -1,13 +1,13 @@
-import { LOCAL_STORAGE } from "common/keys";
+import { STORAGE } from "common/keys";
 import { Logout } from "domain/modules/auth/use-cases";
-import { LocalStorage } from "domain/contracts/gateways";
+import { DomainStorage } from "domain/contracts/gateways";
 
 export class LogoutUseCase implements Logout {
-  constructor(private readonly localStorage: LocalStorage) {}
+  constructor(private readonly localStorage: DomainStorage) {}
 
   async execute(): Promise<void> {
-    this.localStorage.remove({ key: LOCAL_STORAGE.TOKEN });
-    this.localStorage.remove({ key: LOCAL_STORAGE.REFRESH_TOKEN });
+    this.localStorage.remove({ key: STORAGE.TOKEN });
+    this.localStorage.remove({ key: STORAGE.REFRESH_TOKEN });
     return Promise.resolve();
   }
 }
