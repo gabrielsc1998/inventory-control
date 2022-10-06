@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
 
 import Button from "presentation/components/atom/Button";
+import { useLoading } from "presentation/providers/loading";
 import { ProductModel } from "domain/modules/product/model";
 import { Option } from "presentation/components/atom/Select";
 import { DEFAULT_PAGE_SIZE, STATUS } from "common/constants";
@@ -17,6 +18,8 @@ import ModalCreateCategory from "./components/Modal-Create-Category";
 import ModalRemoveProducts from "./components/Modal-Remove-Products";
 
 const ProductsScreen = (): JSX.Element => {
+  const loading = useLoading();
+
   const listProductsUseCase = makeListProductsUseCase();
   const listCategoriesUseCase = makeListCategoriesUseCase();
 
@@ -79,6 +82,8 @@ const ProductsScreen = (): JSX.Element => {
     page: number,
     noCache?: boolean
   ): Promise<void> => {
+    loading.show();
+
     const output = await listProductsUseCase.execute({
       pagination: {
         page: page,
@@ -93,9 +98,13 @@ const ProductsScreen = (): JSX.Element => {
         setProducts(listOfProducts);
       }
     }
+
+    setTimeout(() => loading.close(), 150);
   };
 
   const handleListCategories = async (noCache?: boolean): Promise<void> => {
+    loading.show();
+
     const output = await listCategoriesUseCase.execute({
       noCache,
     });
@@ -112,6 +121,8 @@ const ProductsScreen = (): JSX.Element => {
         );
       }
     }
+
+    setTimeout(() => loading.close(), 150);
   };
 
   useEffect(() => {
@@ -188,8 +199,10 @@ const ProductsScreen = (): JSX.Element => {
         total={products.total}
         pageSize={DEFAULT_PAGE_SIZE}
         onPageChange={async (newPage) => {
-          setCurrentPage(newPage);
-          await handleListProducts(newPage);
+          if (newPage !== currentPage) {
+            setCurrentPage(newPage);
+            await handleListProducts(newPage);
+          }
         }}
       />
     </>

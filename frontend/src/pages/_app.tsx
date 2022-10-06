@@ -3,9 +3,10 @@ import React from "react";
 import { ChakraProvider } from "@chakra-ui/react";
 import { ThemeProvider } from "styled-components";
 
-import Head from "../presentation/components/molecules/Head";
-import theme from "../presentation/styles/theme";
-import GlobalStyles from "../presentation/styles/global";
+import theme from "presentation/styles/theme";
+import GlobalStyles from "presentation/styles/global";
+import Head from "presentation/components/molecules/Head";
+import LoadingProvider from "presentation/providers/loading";
 
 const App = ({ Component, pageProps }) => {
   return (
@@ -13,7 +14,9 @@ const App = ({ Component, pageProps }) => {
       <GlobalStyles />
       <ChakraProvider>
         <Head title="Inventory Control" />
-        <Component {...pageProps} />
+        <LoadingProvider>
+          <Component {...pageProps} />
+        </LoadingProvider>
       </ChakraProvider>
     </ThemeProvider>
   );
