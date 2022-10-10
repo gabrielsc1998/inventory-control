@@ -69,6 +69,10 @@ const ProductsScreen = (): JSX.Element => {
         <S.ActionButton
           icon={<ArrowForwardIcon />}
           id="sub-product-id"
+          disabled={
+            products.data.find((product) => product.id === productId)
+              .quantity === 0
+          }
           onClick={() => {
             setCurrentProductId(productId);
             setShowModal({ ...defaultModalStatus, removeProducts: true });

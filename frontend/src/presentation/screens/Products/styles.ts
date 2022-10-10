@@ -24,6 +24,10 @@ export const ActionButton = styled(IconButton)`
         opacity: 0.85;
         background-color: ${theme.colors.ui.secondary};
       }
+
+      &:disabled {
+        pointer-events: none;
+      }
     }
   `}
 `;
