@@ -23,6 +23,19 @@ const LoginScreen = (): JSX.Element => {
     password: "",
   });
 
+  const disabledLogin = form.email === "" || form.password === "";
+
+  const executeLoginByEnter = async ({
+    code,
+  }: {
+    code: string;
+  }): Promise<void> => {
+    const enterCodes = ["Enter", "NumpadEnter"];
+    if (!disabledLogin && enterCodes.includes(code)) {
+      await handleLogin();
+    }
+  };
+
   const handleLogin = async (): Promise<void> => {
     setLoading(true);
 
@@ -69,16 +82,18 @@ const LoginScreen = (): JSX.Element => {
             variant="flushed"
             placeholder="Insira seu e-mail"
             onChange={(e) => setForm({ ...form, email: e.target.value })}
+            onKeyUpCapture={executeLoginByEnter}
           />
           <InputPassword
             id="input-password-id"
             label="Senha"
             placeholder="Insira sua senha"
             onChange={(e) => setForm({ ...form, password: e.target.value })}
+            onKeyUpCapture={executeLoginByEnter}
           />
         </S.WrapperFormFields>
         <Button
-          disabled={form.email === "" || form.password === ""}
+          disabled={disabledLogin}
           isLoading={loading}
           id="button-login-id"
           label="LOGIN"
