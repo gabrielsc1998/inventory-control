@@ -8,6 +8,8 @@ import { STORAGE } from "common/keys";
 import { SCREEN_ROUTES } from "presentation/routes";
 import { DomainStorage } from "domain/contracts/gateways";
 
+import { IGNORE_URLS } from "./config";
+
 export const refreshTokenMiddleware = (
   client: AxiosInstance,
   domainStorage: DomainStorage
@@ -15,7 +17,7 @@ export const refreshTokenMiddleware = (
   return async (responseError: AxiosError) => {
     responseError;
 
-    const { statusText } = responseError.response;
+    const { statusText, config } = responseError.response;
 
     const logout = async () => {
       const logoutUseCase = makeLogoutUseCase();
@@ -23,7 +25,9 @@ export const refreshTokenMiddleware = (
       window.location.replace(SCREEN_ROUTES.LOGIN);
     };
 
-    if (statusText === "Unauthorized") {
+    const shouldIgnoreThisUrl = IGNORE_URLS.includes(config.url);
+
+    if (statusText === "Unauthorized" && !shouldIgnoreThisUrl) {
       const refreshTokenUseCase = makeRefreshTokenUseCase();
       const output = await refreshTokenUseCase.execute();
       const hasError = output instanceof Error || output.error;
