@@ -35,11 +35,11 @@ export class ProductRepositoryMySQL implements ProductRepository {
 
     const newProduct = { ...product };
 
-    if (input.name) {
+    if (input?.name) {
       newProduct.name = input.name;
     }
 
-    if (input.quantity) {
+    if (typeof input?.quantity === "number") {
       newProduct.quantity = input.quantity;
     }
 

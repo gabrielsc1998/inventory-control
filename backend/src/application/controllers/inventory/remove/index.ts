@@ -14,7 +14,7 @@ export type RemoveInventoryProductInput = {
 
 export class RemoveInventoryProductController implements Controller {
   constructor(
-    private readonly addProductUseCase: RemoveProduct,
+    private readonly removeProductUseCase: RemoveProduct,
     private readonly createInventoryRegister: CreateInventoryRegister
   ) {}
 
@@ -36,7 +36,7 @@ export class RemoveInventoryProductController implements Controller {
       id: dtoRequest.productId,
       quantity: dtoRequest.quantity,
     };
-    const output = await this.addProductUseCase.execute(dtoRemoveProduct);
+    const output = await this.removeProductUseCase.execute(dtoRemoveProduct);
 
     const productNotFound = output instanceof NotFoundError;
     if (productNotFound) {
