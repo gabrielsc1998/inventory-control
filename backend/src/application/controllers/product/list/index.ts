@@ -19,6 +19,7 @@ export class ListProductsController implements Controller {
         size: dtoRequest?.size ? Number(dtoRequest?.size) : undefined,
       },
     };
+
     const output = await this.listProductsUseCase.execute(dtoListProducts);
 
     if (output.data.length === 0) {
